@@ -1,756 +1,461 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flutter Masterclass - Academy Console</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lecture 2: Installing and Setting up Flutter & Android Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,wght@0,300;0,700;0,900;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f2f5f8;
+    --surface: #ffffff;
+    --surface2: #e8ecf1;
+    --border: #ced6e0;
+    --ink: #1e272e;
+    --muted: #57606f;
+    --accent: #02569B; /* Flutter Blue */
+    --accent2: #0175C2;
+    --green: #2ed573;
+    --warn: #ffa502;
+    --code-bg: #1e272e;
+    --code-text: #f1f2f6;
+    --done-bg: #eefbf3;
+    --done-border: #2ed573;
+    --radius: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+    padding: 40px 20px;
+  }
+
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 2.5rem;
+    color: var(--ink);
+    margin-bottom: 10px;
+    line-height: 1.1;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+  }
+
+  .progress-container {
+    background: var(--surface);
+    padding: 15px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    margin-bottom: 30px;
+  }
+
+  .p-bar {
+    background: var(--surface2);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .p-fill {
+    background: var(--green);
+    width: 0%;
+    height: 100%;
+    transition: width 0.3s ease;
+  }
+
+  .p-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .step:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  }
+
+  .step-header {
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    user-select: none;
+  }
+
+  .step-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .step-num {
+    font-family: 'IBM+Plex+Mono', monospace;
+    font-weight: 600;
+    font-size: 0.9rem;
+    background: var(--surface2);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .step-title {
+    font-weight: 600;
+    font-size: 1.05rem;
+  }
+
+  .step-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .mark-btn {
+    background: var(--surface2);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .mark-btn:hover {
+    background: var(--border);
+  }
+
+  .exp-arr {
+    font-size: 0.8rem;
+    color: var(--muted);
+    transition: transform 0.2s;
+  }
+
+  .step-body {
+    display: none;
+    padding: 0 20px 20px 63px;
+    border-top: 1px dashed var(--border);
+    background: #fafbfc;
+  }
+
+  /* Structural Open/Done states */
+  .step.open .step-body { display: block; }
+  .step.open .exp-arr { transform: rotate(180deg); }
   
-  <style>
-    :root {
-      /* Course Theme Color Profile Palette (Flutter Blue Accent) */
-      --brand-primary: #02569B;
-      --brand-primary-glow: rgba(2, 86, 155, 0.15);
-      --brand-primary-hover: #0175C2;
-      
-      --bg-main: #090a0f;
-      --bg-sidebar: #12131a;
-      --bg-card: #1c1e29;
-      --bg-card-hover: #252836;
-      --border-color: #2e3245;
-      
-      --text-main: #f3f4f6;
-      --text-muted: #8e96aa;
-      
-      /* Level Tracking / Difficulty Badge Color System */
-      --crit-color: #ef4444;
-      --crit-glow: rgba(239, 68, 68, 0.1);
-      --high-color: #f97316;
-      --high-glow: rgba(249, 115, 22, 0.1);
-      --med-color: #3b82f6;
-      --med-glow: rgba(59, 130, 246, 0.1);
-      --low-color: #10b981;
-      --low-color-glow: rgba(16, 185, 129, 0.1);
-      
-      --sidebar-width: 320px; /* Reduced layout width to fit compact typography profile */
-    }
+  .step.done {
+    background: var(--done-bg);
+    border-color: var(--done-border);
+  }
+  .step.done .step-num {
+    background: var(--done-border);
+    color: white;
+  }
+  .step.done .step-title {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+  .step.done .mark-btn {
+    background: var(--done-border);
+    color: white;
+  }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-font-smoothing: antialiased;
-    }
+  p {
+    margin-bottom: 12px;
+    color: var(--ink);
+    font-size: 0.95rem;
+  }
 
-    body {
-      background-color: var(--bg-main);
-      color: var(--text-main);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      overflow: hidden;
-      height: 100vh;
-      display: flex;
-    }
+  ol, ul {
+    margin-bottom: 12px;
+    padding-left: 20px;
+    font-size: 0.95rem;
+    color: var(--ink);
+  }
 
-    /* Layout Configurations */
-    .app-container {
-      display: flex;
-      width: 100%;
-      height: 100vh;
-      position: relative;
-    }
+  li { margin-bottom: 6px; }
 
-    /* Left Navigation Panel Index - Kept rigid/sticky across viewport scaling operations */
-    aside {
-      width: var(--sidebar-width);
-      background-color: var(--bg-sidebar);
-      border-right: 1px solid var(--border-color);
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      z-index: 10;
-      flex-shrink: 0; /* Prevents menu compression layout breaks */
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+  .code-block {
+    background: var(--code-bg);
+    border-radius: 6px;
+    padding: 14px;
+    margin: 14px 0;
+    position: relative;
+  }
 
-    .sidebar-header {
-      padding: 16px;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+  pre {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--code-text);
+    overflow-x: auto;
+    white-space: pre-wrap;
+  }
 
-    .brand-title-wrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+  .p-comment { color: #74808a; font-style: italic; }
+  .p-prompt { color: #ff79c6; user-select: none; }
+  .p-warn { color: #ffb86c; font-weight: bold; }
 
-    .brand-icon {
-      width: 20px;
-      height: 20px;
-      color: var(--brand-primary);
-      flex-shrink: 0;
-    }
+  .cp-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: var(--code-text);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    font-weight: 600;
+  }
 
-    .brand-title {
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      background: linear-gradient(135deg, #fff 0%, var(--text-muted) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+  .cp-btn:hover { background: rgba(255,255,255,0.2); }
 
-    /* Search Component Controls Container Matrix */
-    .search-wrapper {
-      position: relative;
-      width: 100%;
-    }
+  .callout {
+    background: #fff9e6;
+    border-left: 4px solid var(--warn);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 14px 0;
+    font-size: 0.9rem;
+  }
 
-    .search-input {
-      width: 100%;
-      background-color: var(--bg-main);
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      color: var(--text-main);
-      padding: 8px 12px 8px 32px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 12px;
-      outline: none;
-      transition: border-color 0.15s ease;
-    }
-
-    .search-input:focus {
-      border-color: var(--brand-primary);
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 14px;
-      height: 14px;
-      color: var(--text-muted);
-      pointer-events: none;
-    }
-
-    /* Scrollable Chapter Module Elements Matrix */
-    .toc-scroll {
-      flex: 1;
-      overflow-y: auto;
-      padding: 12px 8px;
-    }
-
-    .toc-scroll::-webkit-scrollbar {
-      width: 4px;
-    }
-    .toc-scroll::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    .toc-scroll::-webkit-scrollbar-thumb {
-      background: var(--border-color);
-      border-radius: 2px;
-    }
-
-    .toc-item {
-      width: 100%;
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: 6px;
-      padding: 10px 12px;
-      text-align: left;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      transition: all 0.15s ease;
-      margin-bottom: 4px;
-    }
-
-    .toc-item:hover {
-      background-color: var(--bg-card);
-      border-color: var(--border-color);
-    }
-
-    .toc-item.active {
-      background-color: var(--brand-primary-glow);
-      border-color: var(--brand-primary);
-    }
-
-    .toc-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-    }
-
-    .toc-num {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--brand-primary);
-    }
-
-    .toc-item.active .toc-num {
-      color: var(--brand-primary-hover);
-    }
-
-    .severity-badge {
-      font-size: 9px;
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 500;
-      padding: 1px 6px;
-      border-radius: 3px;
-      text-transform: uppercase;
-    }
-
-    .badge-core { background-color: var(--low-color-glow); color: var(--low-color); }
-    .badge-intermediate { background-color: var(--med-glow); color: var(--med-color); }
-    .badge-advanced { background-color: var(--high-glow); color: var(--high-color); }
-    .badge-expert { background-color: var(--crit-glow); color: var(--crit-color); }
-
-    .toc-title {
-      font-size: 12.5px; /* Decreased view text profile proportions */
-      font-weight: 600;
-      color: var(--text-main);
-      line-height: 1.35;
-    }
-
-    .toc-footer-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 10.5px;
-      color: var(--text-muted);
-    }
-
-    .no-results-msg {
-      padding: 24px 12px;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 12px;
-      display: none;
-    }
-
-    /* Right Main Display Sandbox Frame */
-    main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      background-color: var(--bg-main);
-      position: relative;
-      min-width: 0; /* Safeguards main content flex scaling layout bounds */
-    }
-
-    /* Sub-header Navigation Bar Grid */
-    .content-header {
-      height: 60px; /* Reduced header profile sizing footprint */
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      background-color: rgba(9, 10, 15, 0.7);
-      backdrop-filter: blur(12px);
-      z-index: 5;
-    }
-
-    .header-left-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .mobile-menu-toggle {
-      display: none;
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 6px 10px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .incident-nav-meta {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .incident-id-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-
-    .incident-subject {
-      font-size: 14px; /* Scaled down view sizing */
-      font-weight: 600;
-      color: var(--text-main);
-      margin-top: 1px;
-    }
-
-    .action-controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn {
-      background-color: var(--bg-card);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 6px 12px;
-      border-radius: 5px;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      transition: all 0.15s ease;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
-    .btn:hover {
-      background-color: var(--bg-card-hover);
-      border-color: rgba(255,255,255,0.15);
-    }
-
-    .btn-primary {
-      background-color: var(--brand-primary);
-      border-color: var(--brand-primary);
-    }
-
-    .btn-primary:hover {
-      background-color: var(--brand-primary-hover);
-      border-color: var(--brand-primary-hover);
-    }
-
-    /* HTML Embed Frame Block Container */
-    .workspace-frame-wrapper {
-      flex: 1;
-      position: relative;
-      background-color: #14151f;
-    }
-
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      background-color: #fffdf9;
-    }
-
-    .loader-mask {
-      position: absolute;
-      inset: 0;
-      background-color: var(--bg-main);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      z-index: 8;
-      transition: opacity 0.25s ease, visibility 0.25s ease;
-    }
-
-    .loader-mask.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .spinner {
-      width: 24px;
-      height: 24px;
-      border: 2.5px solid var(--border-color);
-      border-top-color: var(--brand-primary);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .loader-text {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    /* Responsive Queries Configurations */
-    @media (max-width: 1024px) {
-      aside {
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        transform: translateX(-100%);
-      }
-
-      aside.mobile-open {
-        transform: translateX(0);
-        box-shadow: 24px 0 48px rgba(0,0,0,0.8);
-      }
-
-      .mobile-menu-toggle {
-        display: block;
-      }
-    }
-  </style>
+  .callout strong { color: #b77c00; }
+</style>
 </head>
 <body>
 
-  <div class="app-container">
-    
-    <aside id="dashboardSidebar">
-      <div class="sidebar-header">
-        <div class="brand-title-wrap">
-          <svg class="brand-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M14.314 0L2.3 12 6 15.7 21.686 0H14.314zM21.686 12l-3.7-3.7-8.286 8.287L13.4 20.3 21.686 12z"/>
-          </svg>
-          <span class="brand-title">Flutter Masterclass</span>
+  <div class="container">
+    <header>
+      <h1>Installing & Setting up Flutter and Android Studio</h1>
+      <div class="subtitle">Lecture 2 Environment Initialization Guide</div>
+    </header>
+
+    <div class="progress-container">
+      <div class="p-bar"><div class="p-fill" id="pFill"></div></div>
+      <div class="p-meta">
+        <span id="pCount">0 / 6 steps</span>
+        <span>Setup Progress</span>
+      </div>
+    </div>
+
+    <div id="stepsContainer">
+
+      <div class="step" id="s1" onclick="ts(1)">
+        <div class="step-header">
+          <div class="step-left">
+            <div class="step-num">1</div>
+            <div class="step-title">Download and Extract the Flutter SDK</div>
+          </div>
+          <div class="step-actions">
+            <button class="mark-btn" onclick="markDone(1, event)">✓ Mark as done</button>
+            <span class="exp-arr">▼</span>
+          </div>
         </div>
-        
-        <div class="search-wrapper">
-          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          <input type="text" id="menuSearchInput" class="search-input" placeholder="Search menu modules..." oninput="filterMenuItems()">
+        <div class="step-body">
+          <p>Get the official Flutter SDK build asset package matching your local machine architecture:</p>
+          <ol>
+            <li>Go to the official Flutter download hub and obtain the stable distribution zip bundle.</li>
+            <li>Create an installation sandbox directory path (e.g., <code>C:\src\flutter</code> or <code>~/development/flutter</code>).</li>
+          </ol>
+          <div class="callout">
+            <strong>Warning:</strong> Do NOT target system directories requiring explicit higher authorization policies such as <code>C:\Program Files\</code>.
+          </div>
         </div>
       </div>
 
-      <div class="toc-scroll" id="tocContainer">
-        <button class="toc-item active" onclick="openIncident(0)">
-          <div class="toc-meta">
-            <span class="toc-num">01</span>
-            <span class="severity-badge badge-core">Core</span>
+      <div class="step" id="s2" onclick="ts(2)">
+        <div class="step-header">
+          <div class="step-left">
+            <div class="step-num">2</div>
+            <div class="step-title">Configure Global Path Environment Variables</div>
           </div>
-          <div class="toc-title">Introduction to Flutter</div>
-          <div class="toc-footer-info"><span>Lecture 1</span></div>
-        </button>
-
-        <button class="toc-item" onclick="openIncident(1)">
-          <div class="toc-meta">
-            <span class="toc-num">02</span>
-            <span class="severity-badge badge-core">Core</span>
+          <div class="step-actions">
+            <button class="mark-btn" onclick="markDone(2, event)">✓ Mark as done</button>
+            <span class="exp-arr">▼</span>
           </div>
-          <div class="toc-title">Installing and Setting up Flutter and Android Studio</div>
-          <div class="toc-footer-info"><span>Lecture 2</span></div>
-        </button>
-
-        <button class="toc-item" onclick="openIncident(2)">
-          <div class="toc-meta">
-            <span class="toc-num">03</span>
-            <span class="severity-badge badge-core">Core</span>
+        </div>
+        <div class="step-body">
+          <p>Append the executable binaries context path lookup to local workspace system configuration parameters:</p>
+          <p><strong>For Windows Systems:</strong> Search for "Edit the system environment variables", enter environment definitions, and append the full absolute path of your <code>flutter\bin</code> terminal module directly into the <code>Path</code> entry array block.</p>
+          <p><strong>For macOS / Linux Systems:</strong> Append the export directive explicitly directly inside your shell configuration profile script file (<code>~/.zshrc</code> or <code>~/.bashrc</code>):</p>
+          <div class="code-block">
+            <button class="cp-btn" onclick="cp(this, event)">Copy</button>
+            <pre>export PATH="$PATH:$HOME/development/flutter/bin"</pre>
           </div>
-          <div class="toc-title">Creating a New Project and Running IT</div>
-          <div class="toc-footer-info"><span>Lecture 3</span></div>
-        </button>
-
-        <button class="toc-item" onclick="openIncident(3)">
-          <div class="toc-meta">
-            <span class="toc-num">04</span>
-            <span class="severity-badge badge-core">Core</span>
-          </div>
-          <div class="toc-title">Basic Understanding about the Folder Structure</div>
-          <div class="toc-footer-info"><span>Lecture 4</span></div>
-        </button>
-
-        <button class="toc-item" onclick="openIncident(4)">
-          <div class="toc-meta">
-            <span class="toc-num">05</span>
-            <span class="severity-badge badge-intermediate">Intermediate</span>
-          </div>
-          <div class="toc-title">Understanding about Activity and Widget</div>
-          <div class="toc-footer-info"><span>Lecture 5</span></div>
-        </button>
-
-        <button class="toc-item" onclick="openIncident(5)">
-          <div class="toc-meta">
-            <span class="toc-num">06</span>
-            <span class="severity-badge badge-intermediate">Intermediate</span>
-          </div>
-          <div class="toc-title">Understanding the Main Source Code Flow</div>
-          <div class="toc-footer-info"><span>Lecture 6</span></div>
-        </button>
-
-        <button class="toc-item" onclick="openIncident(6)">
-          <div class="toc-meta">
-            <span class="toc-num">07</span>
-            <span class="severity-badge badge-intermediate">Intermediate</span>
-          </div>
-          <div class="toc-title">Creating a Main Source Code</div>
-          <div class="toc-footer-info"><span>Lecture 7</span></div>
-        </button>
-
-        <button class="toc-item" onclick="openIncident(7)">
-          <div class="toc-meta">
-            <span class="toc-num">08</span>
-            <span class="severity-badge badge-intermediate">Intermediate</span>
-          </div>
-          <div class="toc-title">About the Material App Class</div>
-          <div class="toc-footer-info"><span>Lecture 8</span></div>
-        </button>
-
-        <button class="toc-item" onclick="openIncident(8)">
-          <div class="toc-meta">
-            <span class="toc-num">09</span>
-            <span class="severity-badge badge-intermediate">Intermediate</span>
-          </div>
-          <div class="toc-title">About the Scaffold Class</div>
-          <div class="toc-footer-info"><span>Lecture 9</span></div>
-        </button>
-
-        <button class="toc-item" onclick="openIncident(9)">
-          <div class="toc-meta">
-            <span class="toc-num">10</span>
-            <span class="severity-badge badge-advanced">Advanced</span>
-          </div>
-          <div class="toc-title">Learning about the Appbar</div>
-          <div class="toc-footer-info"><span>Lecture 10</span></div>
-        </button>
-
-        <button class="toc-item" onclick="openIncident(10)">
-          <div class="toc-meta">
-            <span class="toc-num">11</span>
-            <span class="severity-badge badge-advanced">Advanced</span>
-          </div>
-          <div class="toc-title">Creating a Floating Action Button in Flutter</div>
-          <div class="toc-footer-info"><span>Lecture 11</span></div>
-        </button>
-
-        <button class="toc-item" onclick="openIncident(11)">
-          <div class="toc-meta">
-            <span class="toc-num">12</span>
-            <span class="severity-badge badge-advanced">Advanced</span>
-          </div>
-          <div class="toc-title">The Bottom Tab Navigation</div>
-          <div class="toc-footer-info"><span>Lecture 12</span></div>
-        </button>
-
-        <button class="toc-item" onclick="openIncident(12)">
-          <div class="toc-meta">
-            <span class="toc-num">13</span>
-            <span class="severity-badge badge-advanced">Advanced</span>
-          </div>
-          <div class="toc-title">Learning about the Navigation Drawer</div>
-          <div class="toc-footer-info"><span>Lecture 13</span></div>
-        </button>
-
-        <button class="toc-item" onclick="openIncident(13)">
-          <div class="toc-meta">
-            <span class="toc-num">14</span>
-            <span class="severity-badge badge-advanced">Advanced</span>
-          </div>
-          <div class="toc-title">Working with the Drawer Header</div>
-          <div class="toc-footer-info"><span>Lecture 14</span></div>
-        </button>
-
-        <button class="toc-item" onclick="openIncident(14)">
-          <div class="toc-meta">
-            <span class="toc-num">15</span>
-            <span class="severity-badge badge-advanced">Advanced</span>
-          </div>
-          <div class="toc-title">Difference Between Drawer and endDrawer</div>
-          <div class="toc-footer-info"><span>Lecture 15</span></div>
-        </button>
-
-        <button class="toc-item" onclick="openIncident(15)">
-          <div class="toc-meta">
-            <span class="toc-num">16</span>
-            <span class="severity-badge badge-expert">Expert</span>
-          </div>
-          <div class="toc-title">Working with the Body in Flutter</div>
-          <div class="toc-footer-info"><span>Lecture 16</span></div>
-        </button>
-
-        <button class="toc-item" onclick="openIncident(16)">
-          <div class="toc-meta">
-            <span class="toc-num">17</span>
-            <span class="severity-badge badge-expert">Expert</span>
-          </div>
-          <div class="toc-title">The Body Container</div>
-          <div class="toc-footer-info"><span>Lecture 17</span></div>
-        </button>
-
-        <button class="toc-item" onclick="openIncident(17)">
-          <div class="toc-meta">
-            <span class="toc-num">18</span>
-            <span class="severity-badge badge-expert">Expert</span>
-          </div>
-          <div class="toc-title">Learning about how Row Works in Flutter</div>
-          <div class="toc-footer-info"><span>Lecture 18</span></div>
-        </button>
-
-        <button class="toc-item" onclick="openIncident(18)">
-          <div class="toc-meta">
-            <span class="toc-num">19</span>
-            <span class="severity-badge badge-expert">Expert</span>
-          </div>
-          <div class="toc-title">Making Button in Flutter</div>
-          <div class="toc-footer-info"><span>Lecture 19</span></div>
-        </button>
-        
-        <div class="no-results-msg" id="noResultsMessage">No matching lectures found</div>
+        </div>
       </div>
-    </aside>
 
-    <main>
-      <header class="content-header">
-        <div class="header-left-group">
-          <button class="mobile-menu-toggle" onclick="toggleMobileSidebar()">
-            <span id="toggleButtonText">View Menu</span>
-          </button>
-          <div class="incident-nav-meta">
-            <span class="incident-id-tag" id="currentIdTag">MODULE // MC-FLTR-01</span>
-            <h1 class="incident-subject" id="currentSubject">Introduction to Flutter</h1>
+      <div class="step" id="s3" onclick="ts(3)">
+        <div class="step-header">
+          <div class="step-left">
+            <div class="step-num">3</div>
+            <div class="step-title">Install Android Studio IDE Application</div>
+          </div>
+          <div class="step-actions">
+            <button class="mark-btn" onclick="markDone(3, event)">✓ Mark as done</button>
+            <span class="exp-arr">▼</span>
           </div>
         </div>
-
-        <div class="action-controls">
-          <button class="btn" onclick="navigateIncident(-1)">
-            ← Previous
-          </button>
-          <button class="btn" onclick="navigateIncident(1)">
-            Next →
-          </button>
-          <button class="btn btn-primary" onclick="copyFileLink()">
-            Copy Link
-          </button>
+        <div class="step-body">
+          <p>Configure the foundational background engine components for compiling target Android code packages:</p>
+          <ul>
+            <li>Download and execute the official desktop installation setup client for Android Studio.</li>
+            <li>Follow the system setup wizard directives carefully and confirm the installation of both the <strong>Android SDK Engine</strong> and necessary <strong>Platform Tools</strong>.</li>
+          </ul>
         </div>
-      </header>
-
-      <div class="workspace-frame-wrapper">
-        <div class="loader-mask" id="iframeLoader">
-          <div class="spinner"></div>
-          <span class="loader-text">Loading Curriculum Elements...</span>
-        </div>
-        <iframe id="displaySandbox" src="lecture_1_source.html" onload="onFrameLoad()"></iframe>
       </div>
-    </main>
 
+      <div class="step" id="s4" onclick="ts(4)">
+        <div class="step-header">
+          <div class="step-left">
+            <div class="step-num">4</div>
+            <div class="step-title">Accept Android Command Line Tool Licensing</div>
+          </div>
+          <div class="step-actions">
+            <button class="mark-btn" onclick="markDone(4, event)">✓ Mark as done</button>
+            <span class="exp-arr">▼</span>
+          </div>
+        </div>
+        <div class="step-body">
+          <p>Open Android Studio, select the SDK Manager settings block, choose SDK Tools tab, verify that <strong>Android SDK Command-line Tools (latest)</strong> is activated, and run the following in your terminal application to approve ecosystem compliance agreements:</p>
+          <div class="code-block">
+            <button class="cp-btn" onclick="cp(this, event)">Copy</button>
+            <pre><span class="p-prompt">$</span> flutter doctor --android-licenses</pre>
+          </div>
+          <p>Accept each of the sequentially output license agreement validation checks by entering <code>y</code> when prompted by the terminal engine.</p>
+        </div>
+      </div>
+
+      <div class="step" id="s5" onclick="ts(5)">
+        <div class="step-header">
+          <div class="step-left">
+            <div class="step-num">5</div>
+            <div class="step-title">Set Up Your Target Android Emulator Device</div>
+          </div>
+          <div class="step-actions">
+            <button class="mark-btn" onclick="markDone(5, event)">✓ Mark as done</button>
+            <span class="exp-arr">▼</span>
+          </div>
+        </div>
+        <div class="step-body">
+          <p>Configure a simulated device instance directly inside your workspace framework environments for execution tests:</p>
+          <ol>
+            <li>Select the <strong>Virtual Device Manager</strong> utility inside your IDE setup.</li>
+            <li>Click <strong>Create Device</strong>, choose a device profile layout configuration (e.g., Pixel 7), download a target system runtime image version (e.g., API 34), and complete the profile instantiation steps.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="step" id="s6" onclick="ts(6)">
+        <div class="step-header">
+          <div class="step-left">
+            <div class="step-num">6</div>
+            <div class="step-title">Verify Overall System Integrity Checks via Doctor</div>
+          </div>
+          <div class="step-actions">
+            <button class="mark-btn" onclick="markDone(6, event)">✓ Mark as done</button>
+            <span class="exp-arr">▼</span>
+          </div>
+        </div>
+        <div class="step-body">
+          <p>Execute the analytical check diagnostic operation framework to confirm environment variables are successfully mapped:</p>
+          <div class="code-block">
+            <button class="cp-btn" onclick="cp(this, event)">Copy</button>
+            <pre><span class="p-prompt">$</span> flutter doctor</pre>
+          </div>
+          <p>Verify that the terminal console parameters report no warning blocks. Once all dependencies show verified status checkmarks, your workspace configuration setup is complete.</p>
+        </div>
+      </div>
+
+    </div>
   </div>
 
   <script>
-    // System Data Routing Array Mapping Table
-    const incidents = [
-      { id: "MC-FLTR-01", subject: "Introduction to Flutter", file: "lecture_1_source.html" },
-      { id: "MC-FLTR-02", subject: "Installing and Setting up Flutter and Android Studio", file: "lecture_2_setup.html" },
-      { id: "MC-FLTR-03", subject: "Creating a New Project and Running IT", file: "lecture_3_run.html" },
-      { id: "MC-FLTR-04", subject: "Basic Understanding about the Folder Structure", file: "lecture_4_folders.html" },
-      { id: "MC-FLTR-05", subject: "Understanding about Activity and Widget", file: "lecture_5_widgets.html" },
-      { id: "MC-FLTR-06", subject: "Understanding the Main Source Code Flow", file: "lecture_6_flow.html" },
-      { id: "MC-FLTR-07", subject: "Creating a Main Source Code", file: "lecture_7_code.html" },
-      { id: "MC-FLTR-08", subject: "About the Material App Class", file: "lecture_8_material.html" },
-      { id: "MC-FLTR-09", subject: "About the Scaffold Class", file: "lecture_9_scaffold.html" },
-      { id: "MC-FLTR-10", subject: "Learning about the Appbar", file: "lecture_10_appbar.html" },
-      { id: "MC-FLTR-11", subject: "Creating a Floating Action Button in Flutter", file: "lecture_11_fab.html" },
-      { id: "MC-FLTR-12", subject: "The Bottom Tab Navigation", file: "lecture_12_bottom_nav.html" },
-      { id: "MC-FLTR-13", subject: "Learning about the Navigation Drawer", file: "lecture_13_drawer.html" },
-      { id: "MC-FLTR-14", subject: "Working with the Drawer Header", file: "lecture_14_drawer_header.html" },
-      { id: "MC-FLTR-15", subject: "Difference Between Drawer and endDrawer", file: "lecture_15_drawers_diff.html" },
-      { id: "MC-FLTR-16", subject: "Working with the Body in Flutter", file: "lecture_16_body.html" },
-      { id: "MC-FLTR-17", subject: "The Body Container", file: "lecture_17_container.html" },
-      { id: "MC-FLTR-18", subject: "Learning about how Row Works in Flutter", file: "lecture_18_row.html" },
-      { id: "MC-FLTR-19", subject: "Making Button in Flutter", file: "lecture_19_buttons.html" }
-    ];
+    const TOTAL = 6;
+    const done = new Set();
 
-    let currentIncidentIndex = 0;
+    function ts(n) {
+      const el = document.getElementById('s' + n);
+      const wasOpen = el.classList.contains('open');
+      document.querySelectorAll('.step.open').forEach(s => s.classList.remove('open'));
+      if (!wasOpen) el.classList.add('open');
+    }
 
-    // Filter Menu Items function to provide localized dynamic query evaluation
-    function filterMenuItems() {
-      const filter = document.getElementById('menuSearchInput').value.toLowerCase();
-      const items = document.querySelectorAll('.toc-scroll .toc-item');
-      let visibleCount = 0;
-
-      items.forEach((item) => {
-        const titleText = item.querySelector('.toc-title').textContent.toLowerCase();
-        if (titleText.includes(filter)) {
-          item.style.display = 'flex';
-          visibleCount++;
-        } else {
-          item.style.display = 'none';
-        }
-      });
-
-      // Handle displaying explicit warning when arrays return null values
-      const fallbackMsg = document.getElementById('noResultsMessage');
-      if (visibleCount === 0) {
-        fallbackMsg.style.display = 'block';
+    function markDone(n, e) {
+      e.stopPropagation();
+      const el = document.getElementById('s' + n);
+      if (done.has(n)) {
+        done.delete(n);
+        el.classList.remove('done');
+        el.querySelector('.mark-btn').textContent = '✓ Mark as done';
       } else {
-        fallbackMsg.style.display = 'none';
+        done.add(n);
+        el.classList.add('done');
+        el.querySelector('.mark-btn').textContent = '✓ Completed';
       }
+      updateProgress();
     }
 
-    function openIncident(index) {
-      if (index < 0 || index >= incidents.length) return;
-      
-      currentIncidentIndex = index;
-      const target = incidents[index];
+    function updateProgress() {
+      const pct = (done.size / TOTAL) * 100;
+      document.getElementById('pFill').style.width = pct + '%';
+      document.getElementById('pCount').textContent = done.size + ' / ' + TOTAL + ' steps';
+    }
 
-      document.getElementById('currentIdTag').textContent = `MODULE // ${target.id}`;
-      document.getElementById('currentSubject').textContent = target.subject;
-
-      document.getElementById('iframeLoader').classList.remove('hidden');
-      document.getElementById('displaySandbox').src = target.file;
-
-      document.querySelectorAll('.toc-scroll .toc-item').forEach((btn, idx) => {
-        if (idx === index) {
-          btn.classList.add('active');
-          btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        } else {
-          btn.classList.remove('active');
+    function cp(btn, e) {
+      e.stopPropagation();
+      const pre = btn.closest('.code-block').querySelector('pre');
+      let text = '';
+      pre.childNodes.forEach(n => {
+        if (n.nodeType === 3) text += n.textContent;
+        else if (!n.classList?.contains('p-prompt') && !n.classList?.contains('p-comment') && !n.classList?.contains('p-warn')) {
+          text += n.textContent;
         }
       });
-
-      const sidebar = document.getElementById('dashboardSidebar');
-      if (sidebar.classList.contains('mobile-open')) {
-        toggleMobileSidebar();
-      }
-    }
-
-    function onFrameLoad() {
-      document.getElementById('iframeLoader').classList.add('hidden');
-    }
-
-    function navigateIncident(direction) {
-      // Direct sequential lookup iteration over visible elements or standard incremental indices
-      let targetIndex = currentIncidentIndex + direction;
-      if (targetIndex >= 0 && targetIndex < incidents.length) {
-        openIncident(targetIndex);
-      }
-    }
-
-    function toggleMobileSidebar() {
-      const sidebar = document.getElementById('dashboardSidebar');
-      const text = document.getElementById('toggleButtonText');
-      sidebar.classList.toggle('mobile-open');
-      text.textContent = sidebar.classList.contains('mobile-open') ? "Close Menu" : "View Menu";
-    }
-
-    function copyFileLink() {
-      if (currentIncidentIndex === -1) return;
-      const fullPath = window.location.origin + '/' + incidents[currentIncidentIndex].file;
-      navigator.clipboard.writeText(fullPath).then(() => {
-        alert(`Resource link copied successfully:\n${fullPath}`);
+      navigator.clipboard.writeText(text.trim()).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = orig, 1500);
       });
     }
-
-    // Automatically normalize item configurations and incremental index numbering on runtime setup
-    document.querySelectorAll('.toc-scroll .toc-item').forEach((btn, idx) => {
-      btn.setAttribute('onclick', `openIncident(${idx})`);
-      btn.querySelector('.toc-num').textContent = String(idx + 1).padStart(2, '0');
-    });
   </script>
 </body>
 </html>
