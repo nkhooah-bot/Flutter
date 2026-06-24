@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flutter Masterclass - Academy Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Course Theme Color Profile Palette (Flutter Blue Accent) */
+      --brand-primary: #02569B;
+      --brand-primary-glow: rgba(2, 86, 155, 0.15);
+      --brand-primary-hover: #0175C2;
+      
+      --bg-main: #090a0f;
+      --bg-sidebar: #12131a;
+      --bg-card: #1c1e29;
+      --bg-card-hover: #252836;
+      --border-color: #2e3245;
+      
+      --text-main: #f3f4f6;
+      --text-muted: #8e96aa;
+      
+      /* Level Tracking / Difficulty Badge Color System */
+      --crit-color: #ef4444;
+      --crit-glow: rgba(239, 68, 68, 0.1);
+      --high-color: #f97316;
+      --high-glow: rgba(249, 115, 22, 0.1);
+      --med-color: #3b82f6;
+      --med-glow: rgba(59, 130, 246, 0.1);
+      --low-color: #10b981;
+      --low-color-glow: rgba(16, 185, 129, 0.1);
+      
+      --sidebar-width: 380px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+    }
+
+    /* Layout Configurations */
+    .app-container {
+      display: flex;
+      width: 100%;
+      height: 100vh;
+      position: relative;
+    }
+
+    /* Left Navigation Panel Index */
+    aside {
+      width: var(--sidebar-width);
+      background-color: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      z-index: 10;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .brand-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .brand-icon {
+      width: 24px;
+      height: 24px;
+      color: var(--brand-primary);
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #fff 0%, var(--text-muted) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .system-status {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background-color: var(--low-color);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--low-color);
+    }
+
+    /* Scrollable Chapter Module Elements Matrix */
+    .toc-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 12px;
+    }
+
+    .toc-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .toc-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .toc-scroll::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 3px;
+    }
+
+    .toc-item {
+      width: 100%;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      padding: 14px 16px;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.2s ease;
+      margin-bottom: 8px;
+    }
+
+    .toc-item:hover {
+      background-color: var(--bg-card);
+      border-color: var(--border-color);
+    }
+
+    .toc-item.active {
+      background-color: var(--brand-primary-glow);
+      border-color: var(--brand-primary);
+    }
+
+    .toc-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .toc-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--brand-primary);
+    }
+
+    .toc-item.active .toc-num {
+      color: var(--brand-primary-hover);
+    }
+
+    .severity-badge {
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    /* Core Architectural Badges Conditions */
+    .badge-core { background-color: var(--low-color-glow); color: var(--low-color); }
+    .badge-intermediate { background-color: var(--med-glow); color: var(--med-color); }
+    .badge-advanced { background-color: var(--high-glow); color: var(--high-color); }
+    .badge-expert { background-color: var(--crit-glow); color: var(--crit-color); }
+
+    .toc-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-main);
+      line-height: 1.4;
+    }
+
+    .toc-footer-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Right Main Display Sandbox Frame */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      background-color: var(--bg-main);
+      position: relative;
+    }
+
+    /* Sub-header Navigation Bar Grid */
+    .content-header {
+      height: 73px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background-color: rgba(9, 10, 15, 0.7);
+      backdrop-filter: blur(12px);
+      z-index: 5;
+    }
+
+    .header-left-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mobile-menu-toggle {
+      display: none;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .incident-nav-meta {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .incident-id-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .incident-subject {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-top: 2px;
+    }
+
+    .action-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .btn:hover {
+      background-color: var(--bg-card-hover);
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .btn-primary {
+      background-color: var(--brand-primary);
+      border-color: var(--brand-primary);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--brand-primary-hover);
+      border-color: var(--brand-primary-hover);
+    }
+
+    /* HTML Embed Frame Block Container */
+    .workspace-frame-wrapper {
+      flex: 1;
+      position: relative;
+      background-color: #14151f;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background-color: #fffdf9;
+    }
+
+    /* Asynchronous Loading Buffer Mask Layer */
+    .loader-mask {
+      position: absolute;
+      inset: 0;
+      background-color: var(--bg-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      z-index: 8;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+
+    .loader-mask.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--border-color);
+      border-top-color: var(--brand-primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loader-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Responsive Queries Configurations */
+    @media (max-width: 1024px) {
+      aside {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        transform: translateX(-100%);
+      }
+
+      aside.mobile-open {
+        transform: translateX(0);
+        box-shadow: 24px 0 48px rgba(0,0,0,0.8);
+      }
+
+      .mobile-menu-toggle {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <aside id="dashboardSidebar">
+      <div class="sidebar-header">
+        <div class="brand-title-wrap">
+          <svg class="brand-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M14.314 0L2.3 12 6 15.7 21.686 0H14.314zM21.686 12l-3.7-3.7-8.286 8.287L13.4 20.3 21.686 12z"/>
+          </svg>
+          <span class="brand-title">Flutter Masterclass</span>
+        </div>
+        <div class="system-status">
+          <div class="status-dot"></div>
+          <span>Curriculum Modules: Active Matrix</span>
+        </div>
+      </div>
+
+      <div class="toc-scroll">
+        <button class="toc-item active" onclick="openIncident(0)">
+          <div class="toc-meta">
+            <span class="toc-num">01</span>
+            <span class="severity-badge badge-core">Core</span>
+          </div>
+          <div class="toc-title">Introduction to Flutter</div>
+          <div class="toc-footer-info"><span>Lecture 1</span></div>
+        </button>
+
+        <button class="toc-item" onclick="openIncident(1)">
+          <div class="toc-meta">
+            <span class="toc-num">02</span>
+            <span class="severity-badge badge-core">Core</span>
+          </div>
+          <div class="toc-title">Installing and Setting up Flutter and Android Studio</div>
+          <div class="toc-footer-info"><span>Lecture 2</span></div>
+        </button>
+
+        <button class="toc-item" onclick="openIncident(2)">
+          <div class="toc-meta">
+            <span class="toc-num">03</span>
+            <span class="severity-badge badge-core">Core</span>
+          </div>
+          <div class="toc-title">Creating a New Project and Running IT</div>
+          <div class="toc-footer-info"><span>Lecture 3</span></div>
+        </button>
+
+        <button class="toc-item" onclick="openIncident(3)">
+          <div class="toc-meta">
+            <span class="toc-num">04</span>
+            <span class="severity-badge badge-core">Core</span>
+          </div>
+          <div class="toc-title">Basic Understanding about the Folder Structure</div>
+          <div class="toc-footer-info"><span>Lecture 4</span></div>
+        </button>
+
+        <button class="toc-item" onclick="openIncident(4)">
+          <div class="toc-meta">
+            <span class="toc-num">05</span>
+            <span class="severity-badge badge-intermediate">Intermediate</span>
+          </div>
+          <div class="toc-title">Understanding about Activity and Widget</div>
+          <div class="toc-footer-info"><span>Lecture 5</span></div>
+        </button>
+
+        <button class="toc-item" onclick="openIncident(5)">
+          <div class="toc-meta">
+            <span class="toc-num">06</span>
+            <span class="severity-badge badge-intermediate">Intermediate</span>
+          </div>
+          <div class="toc-title">Understanding the Main Source Code Flow</div>
+          <div class="toc-footer-info"><span>Lecture 6</span></div>
+        </button>
+
+        <button class="toc-item" onclick="openIncident(6)">
+          <div class="toc-meta">
+            <span class="toc-num">07</span>
+            <span class="severity-badge badge-intermediate">Intermediate</span>
+          </div>
+          <div class="toc-title">Creating a Main Source Code</div>
+          <div class="toc-footer-info"><span>Lecture 7</span></div>
+        </button>
+
+        <button class="toc-item" onclick="openIncident(7)">
+          <div class="toc-meta">
+            <span class="toc-num">08</span>
+            <span class="severity-badge badge-intermediate">Intermediate</span>
+          </div>
+          <div class="toc-title">About the Material App Class</div>
+          <div class="toc-footer-info"><span>Lecture 8</span></div>
+        </button>
+
+        <button class="toc-item" onclick="openIncident(8)">
+          <div class="toc-meta">
+            <span class="toc-num">09</span>
+            <span class="severity-badge badge-intermediate">Intermediate</span>
+          </div>
+          <div class="toc-title">About the Scaffold Class</div>
+          <div class="toc-footer-info"><span>Lecture 9</span></div>
+        </button>
+
+        <button class="toc-item" onclick="openIncident(9)">
+          <div class="toc-meta">
+            <span class="toc-num">10</span>
+            <span class="severity-badge badge-advanced">Advanced</span>
+          </div>
+          <div class="toc-title">Learning about the Appbar</div>
+          <div class="toc-footer-info"><span>Lecture 10</span></div>
+        </button>
+
+        <button class="toc-item" onclick="openIncident(10)">
+          <div class="toc-meta">
+            <span class="toc-num">11</span>
+            <span class="severity-badge badge-advanced">Advanced</span>
+          </div>
+          <div class="toc-title">Creating a Floating Action Button in Flutter</div>
+          <div class="toc-footer-info"><span>Lecture 11</span></div>
+        </button>
+
+        <button class="toc-item" onclick="openIncident(11)">
+          <div class="toc-meta">
+            <span class="toc-num">12</span>
+            <span class="severity-badge badge-advanced">Advanced</span>
+          </div>
+          <div class="toc-title">The Bottom Tab Navigation</div>
+          <div class="toc-footer-info"><span>Lecture 12</span></div>
+        </button>
+
+        <button class="toc-item" onclick="openIncident(12)">
+          <div class="toc-meta">
+            <span class="toc-num">13</span>
+            <span class="severity-badge badge-advanced">Advanced</span>
+          </div>
+          <div class="toc-title">Learning about the Navigation Drawer</div>
+          <div class="toc-footer-info"><span>Lecture 13</span></div>
+        </button>
+
+        <button class="toc-item" onclick="openIncident(13)">
+          <div class="toc-meta">
+            <span class="toc-num">14</span>
+            <span class="severity-badge badge-advanced">Advanced</span>
+          </div>
+          <div class="toc-title">Working with the Drawer Header</div>
+          <div class="toc-footer-info"><span>Lecture 14</span></div>
+        </button>
+
+        <button class="toc-item" onclick="openIncident(14)">
+          <div class="toc-meta">
+            <span class="toc-num">15</span>
+            <span class="severity-badge badge-advanced">Advanced</span>
+          </div>
+          <div class="toc-title">Difference Between Drawer and endDrawer</div>
+          <div class="toc-footer-info"><span>Lecture 15</span></div>
+        </button>
+
+        <button class="toc-item" onclick="openIncident(15)">
+          <div class="toc-meta">
+            <span class="toc-num">16</span>
+            <span class="severity-badge badge-expert">Expert</span>
+          </div>
+          <div class="toc-title">Working with the Body in Flutter</div>
+          <div class="toc-footer-info"><span>Lecture 16</span></div>
+        </button>
+
+        <button class="toc-item" onclick="openIncident(16)">
+          <div class="toc-meta">
+            <span class="toc-num">17</span>
+            <span class="severity-badge badge-expert">Expert</span>
+          </div>
+          <div class="toc-title">The Body Container</div>
+          <div class="toc-footer-info"><span>Lecture 17</span></div>
+        </button>
+
+        <button class="toc-item" onclick="openIncident(17)">
+          <div class="toc-meta">
+            <span class="toc-num">18</span>
+            <span class="severity-badge badge-expert">Expert</span>
+          </div>
+          <div class="toc-title">Learning about how Row Works in Flutter</div>
+          <div class="toc-footer-info"><span>Lecture 18</span></div>
+        </button>
+
+        <button class="toc-item" onclick="openIncident(18)">
+          <div class="toc-meta">
+            <span class="toc-num">19</span>
+            <span class="severity-badge badge-expert">Expert</span>
+          </div>
+          <div class="toc-title">Making Button in Flutter</div>
+          <div class="toc-footer-info"><span>Lecture 19</span></div>
+        </button>
+      </div>
+    </aside>
+
+    <main>
+      <header class="content-header">
+        <div class="header-left-group">
+          <button class="mobile-menu-toggle" onclick="toggleMobileSidebar()">
+            <span id="toggleButtonText">View Curriculums Index</span>
+          </button>
+          <div class="incident-nav-meta">
+            <span class="incident-id-tag" id="currentIdTag">MODULE // MC-FLTR-01</span>
+            <h1 class="incident-subject" id="currentSubject">Introduction to Flutter</h1>
+          </div>
+        </div>
+
+        <div class="action-controls">
+          <button class="btn" onclick="navigateIncident(-1)">
+            ← Previous Lecture
+          </button>
+          <button class="btn" onclick="navigateIncident(1)">
+            Next Lecture →
+          </button>
+          <button class="btn btn-primary" onclick="copyFileLink()">
+            Copy Resource Link
+          </button>
+        </div>
+      </header>
+
+      <div class="workspace-frame-wrapper">
+        <div class="loader-mask" id="iframeLoader">
+          <div class="spinner"></div>
+          <span class="loader-text">Loading Curriculum Elements...</span>
+        </div>
+        <iframe id="displaySandbox" src="lecture_1_source.html" onload="onFrameLoad()"></iframe>
+      </div>
+    </main>
+
+  </div>
+
+  <script>
+    // System Data Routing Array Mapping Table
+    const incidents = [
+      { id: "MC-FLTR-01", subject: "Introduction to Flutter", file: "flutter_introduction.html" },
+      { id: "MC-FLTR-02", subject: "Installing and Setting up Flutter and Android Studio", file: "lecture_2_setup.html" },
+      { id: "MC-FLTR-03", subject: "Creating a New Project and Running IT", file: "lecture_3_run.html" },
+      { id: "MC-FLTR-04", subject: "Basic Understanding about the Folder Structure", file: "lecture_4_folders.html" },
+      { id: "MC-FLTR-05", subject: "Understanding about Activity and Widget", file: "lecture_5_widgets.html" },
+      { id: "MC-FLTR-06", subject: "Understanding the Main Source Code Flow", file: "lecture_6_flow.html" },
+      { id: "MC-FLTR-07", subject: "Creating a Main Source Code", file: "lecture_7_code.html" },
+      { id: "MC-FLTR-08", subject: "About the Material App Class", file: "lecture_8_material.html" },
+      { id: "MC-FLTR-09", subject: "About the Scaffold Class", file: "lecture_9_scaffold.html" },
+      { id: "MC-FLTR-10", subject: "Learning about the Appbar", file: "lecture_10_appbar.html" },
+      { id: "MC-FLTR-11", subject: "Creating a Floating Action Button in Flutter", file: "lecture_11_fab.html" },
+      { id: "MC-FLTR-12", subject: "The Bottom Tab Navigation", file: "lecture_12_bottom_nav.html" },
+      { id: "MC-FLTR-13", subject: "Learning about the Navigation Drawer", file: "lecture_13_drawer.html" },
+      { id: "MC-FLTR-14", subject: "Working with the Drawer Header", file: "lecture_14_drawer_header.html" },
+      { id: "MC-FLTR-15", subject: "Difference Between Drawer and endDrawer", file: "lecture_15_drawers_diff.html" },
+      { id: "MC-FLTR-16", subject: "Working with the Body in Flutter", file: "lecture_16_body.html" },
+      { id: "MC-FLTR-17", subject: "The Body Container", file: "lecture_17_container.html" },
+      { id: "MC-FLTR-18", subject: "Learning about how Row Works in Flutter", file: "lecture_18_row.html" },
+      { id: "MC-FLTR-19", subject: "Making Button in Flutter", file: "lecture_19_buttons.html" }
+    ];
+
+    let currentIncidentIndex = 0;
+
+    function openIncident(index) {
+      if (index < 0 || index >= incidents.length) return;
+      
+      currentIncidentIndex = index;
+      const target = incidents[index];
+
+      document.getElementById('currentIdTag').textContent = `MODULE // ${target.id}`;
+      document.getElementById('currentSubject').textContent = target.subject;
+
+      document.getElementById('iframeLoader').classList.remove('hidden');
+      document.getElementById('displaySandbox').src = target.file;
+
+      document.querySelectorAll('.toc-scroll .toc-item').forEach((btn, idx) => {
+        if (idx === index) {
+          btn.classList.add('active');
+          btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      const sidebar = document.getElementById('dashboardSidebar');
+      if (sidebar.classList.contains('mobile-open')) {
+        toggleMobileSidebar();
+      }
+    }
+
+    function onFrameLoad() {
+      document.getElementById('iframeLoader').classList.add('hidden');
+    }
+
+    function navigateIncident(direction) {
+      let targetIndex = currentIncidentIndex + direction;
+      if (targetIndex >= 0 && targetIndex < incidents.length) {
+        openIncident(targetIndex);
+      }
+    }
+
+    function toggleMobileSidebar() {
+      const sidebar = document.getElementById('dashboardSidebar');
+      const text = document.getElementById('toggleButtonText');
+      sidebar.classList.toggle('mobile-open');
+      text.textContent = sidebar.classList.contains('mobile-open') ? "Close Navigation Index" : "View Curriculums Index";
+    }
+
+    function copyFileLink() {
+      if (currentIncidentIndex === -1) return;
+      const fullPath = window.location.origin + '/' + incidents[currentIncidentIndex].file;
+      navigator.clipboard.writeText(fullPath).then(() => {
+        alert(`Resource link copied successfully:\n${fullPath}`);
+      });
+    }
+
+    // Automatically normalize item configurations and incremental index numbering on runtime setup
+    document.querySelectorAll('.toc-scroll .toc-item').forEach((btn, idx) => {
+      btn.setAttribute('onclick', `openIncident(${idx})`);
+      btn.querySelector('.toc-num').textContent = String(idx + 1).padStart(2, '0');
+    });
+  </script>
+</body>
+</html>
