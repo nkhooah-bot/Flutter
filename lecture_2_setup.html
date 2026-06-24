@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lecture 2: Installing and Setting up Flutter & Android Studio</title>
+<title>Lecture 2B: Installing and Setting up Flutter & VS Code</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,wght@0,300;0,700;0,900;1,300&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -14,7 +14,7 @@
     --ink: #1e272e;
     --muted: #57606f;
     --accent: #02569B; /* Flutter Blue */
-    --accent2: #0175C2;
+    --accent-vscode: #007ACC; /* VS Code Blue */
     --green: #2ed573;
     --warn: #ffa502;
     --code-bg: #1e272e;
@@ -264,8 +264,8 @@
 
   <div class="container">
     <header>
-      <h1>Installing & Setting up Flutter and Android Studio</h1>
-      <div class="subtitle">Lecture 2 Environment Initialization Guide</div>
+      <h1>Installing & Setting up Flutter and Visual Studio Code</h1>
+      <div class="subtitle">Lecture 2B Environment Initialization Guide</div>
     </header>
 
     <div class="progress-container">
@@ -290,13 +290,14 @@
           </div>
         </div>
         <div class="step-body">
-          <p>Get the official Flutter SDK build asset package matching your local machine architecture:</p>
+          <p>Get the official Flutter SDK build asset package matching your operating system configuration:</p>
           <ol>
-            <li>Go to the official Flutter download hub and obtain the stable distribution zip bundle.</li>
-            <li>Create an installation sandbox directory path (e.g., <code>C:\src\flutter</code> or <code>~/development/flutter</code>).</li>
+            <li>Navigate to the official Flutter download hub and obtain the latest stable distribution zip bundle.</li>
+            <li>Create a dedicated workspace installation directory (e.g., <code>C:\src\flutter</code> on Windows or <code>~/development/flutter</code> on macOS/Linux).</li>
+            <li>Extract the contents of the zip archive directly into that destination path.</li>
           </ol>
           <div class="callout">
-            <strong>Warning:</strong> Do NOT target system directories requiring explicit higher authorization policies such as <code>C:\Program Files\</code>.
+            <strong>Warning:</strong> Do NOT extract the SDK into system directories requiring administrative access elevations, such as <code>C:\Program Files\</code>.
           </div>
         </div>
       </div>
@@ -305,7 +306,7 @@
         <div class="step-header">
           <div class="step-left">
             <div class="step-num">2</div>
-            <div class="step-title">Configure Global Path Environment Variables</div>
+            <div class="step-title">Configure Global System Environment Variables</div>
           </div>
           <div class="step-actions">
             <button class="mark-btn" onclick="markDone(2, event)">✓ Mark as done</button>
@@ -313,9 +314,9 @@
           </div>
         </div>
         <div class="step-body">
-          <p>Append the executable binaries context path lookup to local workspace system configuration parameters:</p>
-          <p><strong>For Windows Systems:</strong> Search for "Edit the system environment variables", enter environment definitions, and append the full absolute path of your <code>flutter\bin</code> terminal module directly into the <code>Path</code> entry array block.</p>
-          <p><strong>For macOS / Linux Systems:</strong> Append the export directive explicitly directly inside your shell configuration profile script file (<code>~/.zshrc</code> or <code>~/.bashrc</code>):</p>
+          <p>Expose Flutter executable binaries globally so terminal instances can locate them automatically:</p>
+          <p><strong>For Windows Systems:</strong> Search for "Edit the system environment variables" in your start menu, click "Environment Variables", locate the <code>Path</code> entry under user variables, click Edit, and append the absolute path to your <code>flutter\bin</code> directory.</p>
+          <p><strong>For macOS / Linux Systems:</strong> Append the export path directive directly into your shell context configuration profile script (such as <code>~/.zshrc</code> or <code>~/.bashrc</code>):</p>
           <div class="code-block">
             <button class="cp-btn" onclick="cp(this, event)">Copy</button>
             <pre>export PATH="$PATH:$HOME/development/flutter/bin"</pre>
@@ -327,7 +328,7 @@
         <div class="step-header">
           <div class="step-left">
             <div class="step-num">3</div>
-            <div class="step-title">Install Android Studio IDE Application</div>
+            <div class="step-title">Install Visual Studio Code IDE Application</div>
           </div>
           <div class="step-actions">
             <button class="mark-btn" onclick="markDone(3, event)">✓ Mark as done</button>
@@ -335,10 +336,10 @@
           </div>
         </div>
         <div class="step-body">
-          <p>Configure the foundational background engine components for compiling target Android code packages:</p>
+          <p>Set up your primary lightweight code editing interface and environment engine:</p>
           <ul>
-            <li>Download and execute the official desktop installation setup client for Android Studio.</li>
-            <li>Follow the system setup wizard directives carefully and confirm the installation of both the <strong>Android SDK Engine</strong> and necessary <strong>Platform Tools</strong>.</li>
+            <li>Download the official installer binary from the code.visualstudio.com portal.</li>
+            <li>Run the installer and follow the setup wizard directives. On Windows, make sure to check the option to <strong>"Add to PATH"</strong> to enable terminal command line tracking.</li>
           </ul>
         </div>
       </div>
@@ -347,7 +348,7 @@
         <div class="step-header">
           <div class="step-left">
             <div class="step-num">4</div>
-            <div class="step-title">Accept Android Command Line Tool Licensing</div>
+            <div class="step-title">Install Dart & Flutter Extensions in VS Code</div>
           </div>
           <div class="step-actions">
             <button class="mark-btn" onclick="markDone(4, event)">✓ Mark as done</button>
@@ -355,12 +356,12 @@
           </div>
         </div>
         <div class="step-body">
-          <p>Open Android Studio, select the SDK Manager settings block, choose SDK Tools tab, verify that <strong>Android SDK Command-line Tools (latest)</strong> is activated, and run the following in your terminal application to approve ecosystem compliance agreements:</p>
-          <div class="code-block">
-            <button class="cp-btn" onclick="cp(this, event)">Copy</button>
-            <pre><span class="p-prompt">$</span> flutter doctor --android-licenses</pre>
-          </div>
-          <p>Accept each of the sequentially output license agreement validation checks by entering <code>y</code> when prompted by the terminal engine.</p>
+          <p>Equip your editor workspace with full autocomplete compilation tooling, syntax helpers, and debugger integrations:</p>
+          <ol>
+            <li>Launch Visual Studio Code and click the <strong>Extensions Marketplace</strong> icon on the left Activity Bar (or press <code>Ctrl+Shift+X</code> / <code>Cmd+Shift+X</code>).</li>
+            <li>Search for <strong>"Flutter"</strong> (published by flutter.dev) and click <strong>Install</strong>. This action will automatically discover and install the companion <strong>Dart</strong> extension asset.</li>
+            <li><em>Highly Recommended Optional Extension:</em> Search for and install <strong>"Error Lens"</strong> to display warning logs and compilation problems instantly inline inside your code canvas lines.</li>
+          </ol>
         </div>
       </div>
 
@@ -368,7 +369,7 @@
         <div class="step-header">
           <div class="step-left">
             <div class="step-num">5</div>
-            <div class="step-title">Set Up Your Target Android Emulator Device</div>
+            <div class="step-title">Configure Android Toolchains & Software Licences</div>
           </div>
           <div class="step-actions">
             <button class="mark-btn" onclick="markDone(5, event)">✓ Mark as done</button>
@@ -376,11 +377,16 @@
           </div>
         </div>
         <div class="step-body">
-          <p>Configure a simulated device instance directly inside your workspace framework environments for execution tests:</p>
-          <ol>
-            <li>Select the <strong>Virtual Device Manager</strong> utility inside your IDE setup.</li>
-            <li>Click <strong>Create Device</strong>, choose a device profile layout configuration (e.g., Pixel 7), download a target system runtime image version (e.g., API 34), and complete the profile instantiation steps.</li>
-          </ol>
+          <p>Even when using VS Code as your main IDE editor, Flutter requires core background utilities provided by the Android SDK framework for device deployments:</p>
+          <ul>
+            <li>Ensure Android Studio or the standalone Android SDK command-line options bundle is present on your system with <strong>Android SDK Command-line Tools (latest)</strong> activated.</li>
+            <li>Open a new system command prompt or shell window and execute the global compliance validation prompt to sign agreements:</li>
+          </ul>
+          <div class="code-block">
+            <button class="cp-btn" onclick="cp(this, event)">Copy</button>
+            <pre><span class="p-prompt">$</span> flutter doctor --android-licenses</pre>
+          </div>
+          <p>Type <code>y</code> (yes) to accept each sequential ecosystem license agreement check output by the platform engine.</p>
         </div>
       </div>
 
@@ -388,7 +394,7 @@
         <div class="step-header">
           <div class="step-left">
             <div class="step-num">6</div>
-            <div class="step-title">Verify Overall System Integrity Checks via Doctor</div>
+            <div class="step-title">Execute Environment Diagnostic System Checks</div>
           </div>
           <div class="step-actions">
             <button class="mark-btn" onclick="markDone(6, event)">✓ Mark as done</button>
@@ -396,12 +402,12 @@
           </div>
         </div>
         <div class="step-body">
-          <p>Execute the analytical check diagnostic operation framework to confirm environment variables are successfully mapped:</p>
+          <p>Run the analytical diagnostic engine package to verify all environmental paths and editor dependencies map successfully:</p>
           <div class="code-block">
             <button class="cp-btn" onclick="cp(this, event)">Copy</button>
             <pre><span class="p-prompt">$</span> flutter doctor</pre>
           </div>
-          <p>Verify that the terminal console parameters report no warning blocks. Once all dependencies show verified status checkmarks, your workspace configuration setup is complete.</p>
+          <p>Verify that both the <strong>VS Code</strong> entry and <strong>Android Toolchain</strong> check blocks show valid green verification marks. Once confirmed, your localized coding workstation setup is ready for project creation.</p>
         </div>
       </div>
 
