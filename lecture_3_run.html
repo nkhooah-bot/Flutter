@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lecture 3: Initializing and Running Flutter Projects via VS Code</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,wght@0,300;0,700;0,900;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f2f5f8;
+    --surface: #ffffff;
+    --surface2: #e8ecf1;
+    --border: #ced6e0;
+    --ink: #1e272e;
+    --muted: #57606f;
+    --accent: #02569B; /* Flutter Blue */
+    --accent2: #0175C2;
+    --green: #2ed573;
+    --warn: #ffa502;
+    --code-bg: #1e272e;
+    --code-text: #f1f2f6;
+    --done-bg: #eefbf3;
+    --done-border: #2ed573;
+    --radius: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+    padding: 40px 20px;
+  }
+
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 2.5rem;
+    color: var(--ink);
+    margin-bottom: 10px;
+    line-height: 1.1;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+  }
+
+  .progress-container {
+    background: var(--surface);
+    padding: 15px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    margin-bottom: 30px;
+  }
+
+  .p-bar {
+    background: var(--surface2);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .p-fill {
+    background: var(--green);
+    width: 0%;
+    height: 100%;
+    transition: width 0.3s ease;
+  }
+
+  .p-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .step:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  }
+
+  .step-header {
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    user-select: none;
+  }
+
+  .step-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .step-num {
+    font-family: 'IBM+Plex+Mono', monospace;
+    font-weight: 600;
+    font-size: 0.9rem;
+    background: var(--surface2);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .step-title {
+    font-weight: 600;
+    font-size: 1.05rem;
+  }
+
+  .step-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .mark-btn {
+    background: var(--surface2);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .mark-btn:hover {
+    background: var(--border);
+  }
+
+  .exp-arr {
+    font-size: 0.8rem;
+    color: var(--muted);
+    transition: transform 0.2s;
+  }
+
+  .step-body {
+    display: none;
+    padding: 0 20px 20px 63px;
+    border-top: 1px dashed var(--border);
+    background: #fafbfc;
+  }
+
+  /* Structural Open/Done states */
+  .step.open .step-body { display: block; }
+  .step.open .exp-arr { transform: rotate(180deg); }
+  
+  .step.done {
+    background: var(--done-bg);
+    border-color: var(--done-border);
+  }
+  .step.done .step-num {
+    background: var(--done-border);
+    color: white;
+  }
+  .step.done .step-title {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+  .step.done .mark-btn {
+    background: var(--done-border);
+    color: white;
+  }
+
+  p {
+    margin-bottom: 12px;
+    color: var(--ink);
+    font-size: 0.95rem;
+  }
+
+  ol, ul {
+    margin-bottom: 12px;
+    padding-left: 20px;
+    font-size: 0.95rem;
+    color: var(--ink);
+  }
+
+  li { margin-bottom: 6px; }
+
+  .code-block {
+    background: var(--code-bg);
+    border-radius: 6px;
+    padding: 14px;
+    margin: 14px 0;
+    position: relative;
+  }
+
+  pre {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--code-text);
+    overflow-x: auto;
+    white-space: pre-wrap;
+  }
+
+  .p-comment { color: #74808a; font-style: italic; }
+  .p-prompt { color: #ff79c6; user-select: none; }
+  .p-warn { color: #ffb86c; font-weight: bold; }
+
+  .cp-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: var(--code-text);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .cp-btn:hover { background: rgba(255,255,255,0.2); }
+
+  .callout {
+    background: #fff9e6;
+    border-left: 4px solid var(--warn);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 14px 0;
+    font-size: 0.9rem;
+  }
+
+  .callout strong { color: #b77c00; }
+</style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Creating a New Project and Running It via VS Code</h1>
+      <div class="subtitle">Lecture 3 Optimization Strategy using Visual Studio Code Workspace</div>
+    </header>
+
+    <div class="progress-container">
+      <div class="p-bar"><div class="p-fill" id="pFill"></div></div>
+      <div class="p-meta">
+        <span id="pCount">0 / 5 steps</span>
+        <span>Lecture Progress</span>
+      </div>
+    </div>
+
+    <div id="stepsContainer">
+
+      <div class="step" id="s1" onclick="ts(1)">
+        <div class="step-header">
+          <div class="step-left">
+            <div class="step-num">1</div>
+            <div class="step-title">Initialize Flutter Project via VS Code Command Palette</div>
+          </div>
+          <div class="step-actions">
+            <button class="mark-btn" onclick="markDone(1, event)">✓ Mark as done</button>
+            <span class="exp-arr">▼</span>
+          </div>
+        </div>
+        <div class="step-body">
+          <p>Instead of relying on heavy Android Studio wizard wrappers, initialize the template layout cleanly inside VS Code:</p>
+          <ul>
+            <li>Launch Visual Studio Code and activate the core interface operations window by opening the <strong>Command Palette</strong> (<code>Ctrl+Shift+P</code> on Windows/Linux or <code>Cmd+Shift+P</code> on macOS).</li>
+            <li>Begin typing <strong>"Flutter"</strong> and select the <strong>Flutter: New Project</strong> process token.</li>
+            <li>Choose <strong>Application</strong> from the sequential framework template configuration list options.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step" id="s2" onclick="ts(2)">
+        <div class="step-header">
+          <div class="step-left">
+            <div class="step-num">2</div>
+            <div class="step-title">Select Directory and Define Project Properties</div>
+          </div>
+          <div class="step-actions">
+            <button class="mark-btn" onclick="markDone(2, event)">✓ Mark as done</button>
+            <span class="exp-arr">▼</span>
+          </div>
+        </div>
+        <div class="step-body">
+          <p>Link your development paths and initialize structural workspace attributes:</p>
+          <ol>
+            <li>An OS folder picker dialog will appear. Select your target parent container directory (such as your designated course resource folders) and click <strong>Select a folder to create the project in</strong>.</li>
+            <li>Define the package initialization parameters:
+              <ul>
+                <li><strong>Project Name:</strong> Must follow explicit Dart specifications: lowercase letters, digits, and underscores only (e.g., <code>application_one</code>).</li>
+                <li>Press <code>Enter</code> to let the integrated system generate your scaffolding tree structures.</li>
+              </ul>
+            </li>
+          </ol>
+          <div class="callout">
+            <strong>Formatting Rule:</strong> Using camelCase, dashes, or empty string whitespace tokens will result in a validation failure flag since they violate strict Dart package naming conventions.
+          </div>
+        </div>
+      </div>
+
+      <div class="step" id="s3" onclick="ts(3)">
+        <div class="step-header">
+          <div class="step-left">
+            <div class="step-num">3</div>
+            <div class="step-title">Fine-tune Targeting (Target Platform Isolation) via Terminal</div>
+          </div>
+          <div class="step-actions">
+            <button class="mark-btn" onclick="markDone(3, event)">✓ Mark as done</button>
+            <span class="exp-arr">▼</span>
+          </div>
+        </div>
+        <div class="step-body">
+          <p>To reduce background compilation overhead on your local computer, limit platform compilation parameters using the terminal:</p>
+          <p>Open the VS Code integrated terminal panel context wrapper (<code>Ctrl+`</code>) and check system setup environments or create optimized configurations directly:</p>
+          <div class="code-block">
+            <button class="cp-btn" onclick="cp(this, event)">Copy</button>
+            <pre><span class="p-prompt"># Alternative terminal command to generate identical custom targets explicitly:</span>
+<span class="p-prompt">$</span> flutter create --org com.example --platforms=android,ios application_one</pre>
+          </div>
+          <p>This explicitly keeps native build configurations locked to mobile platforms (Android and iOS), avoiding unneeded platform sub-directories.</p>
+        </div>
+      </div>
+
+      <div class="step" id="s4" onclick="ts(4)">
+        <div class="step-header">
+          <div class="step-left">
+            <div class="step-num">4</div>
+            <div class="step-title">Launch Project via Browser Engine (Chrome Web)</div>
+          </div>
+          <div class="step-actions">
+            <button class="mark-btn" onclick="markDone(4, event)">✓ Mark as done</button>
+            <span class="exp-arr">▼</span>
+          </div>
+        </div>
+        <div class="step-body">
+          <p>For instantaneous live interface testing with minimal development platform overhead, target a lightweight web context view:</p>
+          <ol>
+            <li>Locate the <strong>Device Selector Status Bar Segment</strong> situated at the lower right-hand margin of the VS Code interface.</li>
+            <li>Click the target selector element and choose <strong>Chrome (web-javascript)</strong> from the dropdown overlay index list.</li>
+            <li>Open your main source folder asset (<code>lib/main.dart</code>) and hit <code>F5</code> or click <strong>Run -> Start Debugging</strong> from the top utility line.</li>
+          </ol>
+          <p>The layout rendering canvas will serve out your sample <em>Flutter Demo Home Page</em> inside a Chrome sandbox window frame.</p>
+        </div>
+      </div>
+
+      <div class="step" id="s5" onclick="ts(5)">
+        <div class="step-header">
+          <div class="step-left">
+            <div class="step-num">5</div>
+            <div class="step-title">Connect Physical Mobile Devices over ADB Device Mirroring</div>
+          </div>
+          <div class="step-actions">
+            <button class="mark-btn" onclick="markDone(5, event)">✓ Mark as done</button>
+            <span class="exp-arr">▼</span>
+          </div>
+        </div>
+        <div class="step-body">
+          <p>Running native android virtual emulators drains local computer memory and CPU resources. Mirroring a physical handset provides a smoother, more efficient coding workflow:</p>
+          
+          <p><strong>Physical Hardware Device Hookup Steps:</strong></p>
+          <ol>
+            <li>Access your phone's configuration dashboard settings, locate "About Phone", and tap the <strong>Build Number</strong> row 7 times until developer options are unlocked. Enable <strong>USB Debugging</strong>.</li>
+            <li>Connect your mobile handset directly to your computer using a standard hardware data cable link asset.</li>
+            <li>Run a quick status verification loop inside your VS Code terminal window to confirm detection:</li>
+          </ol>
+          <div class="code-block">
+            <button class="cp-btn" onclick="cp(this, event)">Copy</button>
+            <pre><span class="p-prompt">$</span> flutter devices</pre>
+          </div>
+          
+          <p><strong>Optional High-Efficiency Display Setup:</strong></p>
+          <ul>
+            <li>To view your live app updates side-by-side with your code without picking up your phone, open a device mirroring manager like <strong>Vysor</strong>.</li>
+            <li>Select your device from the VS Code status bar device target selection box, hit <code>F5</code>, and watch code modifications update live via <strong>Stateful Hot Reload</strong>.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const TOTAL = 5;
+    const done = new Set();
+
+    function ts(n) {
+      const el = document.getElementById('s' + n);
+      const wasOpen = el.classList.contains('open');
+      document.querySelectorAll('.step.open').forEach(s => s.classList.remove('open'));
+      if (!wasOpen) el.classList.add('open');
+    }
+
+    function markDone(n, e) {
+      e.stopPropagation();
+      const el = document.getElementById('s' + n);
+      if (done.has(n)) {
+        done.delete(n);
+        el.classList.remove('done');
+        el.querySelector('.mark-btn').textContent = '✓ Mark as done';
+      } else {
+        done.add(n);
+        el.classList.add('done');
+        el.querySelector('.mark-btn').textContent = '✓ Completed';
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const pct = (done.size / TOTAL) * 100;
+      document.getElementById('pFill').style.width = pct + '%';
+      document.getElementById('pCount').textContent = done.size + ' / ' + TOTAL + ' steps';
+    }
+
+    function cp(btn, e) {
+      e.stopPropagation();
+      const pre = btn.closest('.code-block').querySelector('pre');
+      let text = '';
+      pre.childNodes.forEach(n => {
+        if (n.nodeType === 3) text += n.textContent;
+        else if (!n.classList?.contains('p-prompt') && !n.classList?.contains('p-comment') && !n.classList?.contains('p-warn')) {
+          text += n.textContent;
+        }
+      });
+      navigator.clipboard.writeText(text.trim()).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = orig, 1500);
+      });
+    }
+  </script>
+</body>
+</html>
