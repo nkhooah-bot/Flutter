@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Working with User Accounts Drawer Header</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Code+Pro:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #1a6b72;
+    --teal-dark: #124f54;
+    --teal-light: #e8f4f5;
+    --gold: #c8a84b;
+    --cream: #fdf6ec;
+    --paper: #fffdf9;
+    --ink: #1e1e1e;
+    --muted: #6b6b6b;
+    --border: #d4c9b0;
+    --code-bg: #f5f2ec;
+    --accent: #e85d2a;
+    --green: #3d9970;
+    --red: #e85d2a;
+    --page-width: 820px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #c8bfaf;
+    background-image: repeating-linear-gradient(45deg, #c4baa9 0px, #c4baa9 2px, transparent 2px, transparent 10px);
+    font-family: 'Lato', sans-serif;
+    color: var(--ink);
+    line-height: 1.6;
+    padding: 40px 20px;
+  }
+  #page-container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    background: var(--paper);
+    padding: 50px 60px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    position: relative;
+  }
+  header {
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+  }
+  .meta-header {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 13px;
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    color: var(--teal-dark);
+    line-height: 1.2;
+    font-weight: 700;
+  }
+  .intro-text {
+    font-size: 17px;
+    color: var(--muted);
+    margin-top: 15px;
+    font-style: italic;
+  }
+  #toc {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    padding: 25px;
+    margin-bottom: 40px;
+  }
+  #toc h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--teal-dark);
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 5px;
+  }
+  #toc ul {
+    list-style: none;
+  }
+  #toc li {
+    margin-bottom: 10px;
+    font-size: 15px;
+  }
+  #toc a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--gold);
+    transition: color 0.2s;
+  }
+  #toc a:hover {
+    color: var(--teal);
+    border-bottom-style: solid;
+  }
+  .section-block {
+    margin-bottom: 45px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: var(--teal-dark);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+  }
+  .sec-num {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 14px;
+    background: var(--teal);
+    color: white;
+    padding: 3px 8px;
+    margin-right: 12px;
+    border-radius: 3px;
+    font-weight: 400;
+  }
+  p {
+    margin-bottom: 18px;
+    font-size: 16px;
+    color: #2c2c2c;
+    text-align: justify;
+  }
+  p strong {
+    color: var(--teal-dark);
+  }
+  ul {
+    margin-left: 25px;
+    margin-bottom: 18px;
+  }
+  li {
+    margin-bottom: 6px;
+    font-size: 16px;
+  }
+  .highlight-box {
+    background: var(--teal-light);
+    border-left: 4px solid var(--teal);
+    padding: 20px;
+    margin: 25px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .highlight-box h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--teal-dark);
+    margin-bottom: 8px;
+  }
+  .chip {
+    font-family: 'Source Code Pro', monospace;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    font-size: 13.5px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--teal-dark);
+  }
+  .code-container {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 20px;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 25px 0;
+    overflow-x: auto;
+    border-radius: 4px;
+  }
+  .code-comment { color: #8c8c8c; font-style: italic; }
+  .code-keyword { color: #a11515; font-weight: 600; }
+  .code-type { color: #1a6b72; font-weight: 600; }
+  .code-string { color: #2b7a3e; }
+  .code-number { color: #b57614; }
+  
+  #footer {
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<div id="page-container">
+
+  <header>
+    <div class="meta-header">Flutter Cross-Platform Architecture Series</div>
+    <h1>Working with User Accounts Drawer Header</h1>
+    <div class="intro-text">
+      Transitioning from standard text drawer headers to specialized account profile layers, managing container padding configurations, skinning background decorations, and handling detail tap callback responses.
+    </div>
+  </header>
+
+  <nav id="toc">
+    <h2>Table of Contents</h2>
+    <ul>
+      <li><a href="#conceptual-overview">1. Introduction to Advanced Drawer Headers</a></li>
+      <li><a href="#removing-padding">2. Eliminating Default Drawer Padding</a></li>
+      <li><a href="#user-accounts-header">3. Architecting the UserAccountsDrawerHeader Widget</a></li>
+      <li><a href="#profile-image-handling">4. Integrating Profile Images and Network Assets</a></li>
+      <li><a href="#callback-logic">5. Attaching Detail Press Interaction Callbacks</a></li>
+      <li><a href="#complete-implementation">6. Full Technical Code Guide</a></li>
+    </ul>
+  </nav>
+
+  <div id="content-wrapper">
+
+    <section class="section-block" id="conceptual-overview">
+      <h2 class="section-title"><span class="sec-num">Section 1</span>Introduction to Advanced Drawer Headers</h2>
+      <p>
+        Building upon our discovery of structural <span class="chip">Drawer</span> frameworks and interaction elements like <span class="chip">ListTile</span> configurations, we now isolate the topmost segment of the sidebar: the <strong>Drawer Header</strong>. In standard layouts, this structural slot serves as the identity hub of an application.
+      </p>
+      <p>
+        While a generic template allows simple text strings via a placeholder widget child, standard modern user experience profiles demand a structured container that seamlessly handles profile images, background layout decorations, text descriptors, and fallback operational elements.
+      </p>
+    </section>
+
+    <section class="section-block" id="removing-padding">
+      <h2 class="section-title"><span class="sec-num">Section 2</span>Eliminating Default Drawer Padding</h2>
+      <p>
+        By architectural default, host layout layers nesting a <span class="chip">DrawerHeader</span> inject layout-level edge buffers around their boundaries. This creates a small gap between the main header block and the physical screen margins of the mobile viewpoint canvas.
+      </p>
+      <p>
+        To completely clear this spacing and allow background colors or asset decorations to flush smoothly against the top, left, and right bounds of the drawer panel, override the parent header padding using an absolute zero utility value:
+      </p>
+      <div class="code-container">
+        padding: <span class="code-type">EdgeInsets</span>.all(<span class="code-number">0</span>)
+      </div>
+    </section>
+
+    <section class="section-block" id="user-accounts-header">
+      <h2 class="section-title"><span class="sec-num">Section 3</span>Architecting the UserAccountsDrawerHeader Widget</h2>
+      <p>
+        The material design engine supplies a specialized, production-ready class specifically for managing professional profile schemas: the <span class="chip">UserAccountsDrawerHeader</span>. When declaring this class as the child of your layout framework, the compiler evaluates a set of required configurations:
+      </p>
+      <ul>
+        <li><strong>decoration:</strong> Accepts a specialized <span class="chip">BoxDecoration</span> layout container class to skin background profiles, control opacity states, or declare uniform colors (such as custom color blocks).</li>
+        <li><strong>accountName:</strong> Accepts a standard widget layer, typically initialized with a customized <span class="chip">Text</span> element displaying the descriptive identity of the authenticated user.</li>
+        <li><strong>accountEmail:</strong> A secondary mandatory descriptive element slot that accepts a tracking text string representing the active profile contact point.</li>
+      </ul>
+      <div class="highlight-box">
+        <h3>Compilation Warning Reference</h3>
+        <p>
+          Declaring a <span class="chip">UserAccountsDrawerHeader</span> block without simultaneously assigning values to <strong>both</strong> the <span class="chip">accountName</span> and <span class="chip">accountEmail</span> parameter properties will cause the framework analyzer to fail compilation, pointing out a missing argument block error.
+        </p>
+      </div>
+    </section>
+
+    <section class="section-block" id="profile-image-handling">
+      <h2 class="section-title"><span class="sec-num">Section 4</span>Integrating Profile Images and Network Assets</h2>
+      <p>
+        To register user display photos within the identity header, leverage the specialized parameter property slot named <span class="chip">currentAccountPicture</span>. This parameter takes any widget node and shapes it into an avatar structure aligned perfectly along the top-left section of the container panel.
+      </p>
+      <p>
+        When importing external assets dynamically via URL links, instantiate the <span class="chip">Image.network</span> asset manager wrapper class.
+      </p>
+      <div class="highlight-box">
+        <h3>Asset Formatting Requirement</h3>
+        <p>
+          When utilizing network link calls within compilation test streams, ensure that the targeted file link points explicitly to an asset matching a <strong>PNG</strong> formatting extension structure. Fetching unstructured webpage addresses or unsupported file formats will trigger internal image codec errors, showing a broken image canvas indicator at runtime.
+        </p>
+      </div>
+      <p>
+        To easily alter the dimensions of your profile picture node without manually nesting deep layout widgets, supply the specialized helper tracking parameter:
+      </p>
+      <div class="code-container">
+        currentAccountPictureSize: <span class="code-keyword">const</span> <span class="code-type">Size</span>.square(<span class="code-number">50.0</span>)
+      </div>
+    </section>
+
+    <section class="section-block" id="callback-logic">
+      <h2 class="section-title"><span class="sec-num">Section 5</span>Attaching Detail Press Interaction Callbacks</h2>
+      <p>
+        Beyond displaying identity states, the header includes an interactive feedback track. By declaring the <span class="chip">onDetailsPressed</span> callback method block, you unlock a tap trigger channel across the entire tracking boundary of the header block.
+      </p>
+      <p>
+        While functional production architecture maps this interaction pipeline to trigger transitions toward profile management pages, you can easily implement temporary debug tracks by passing a contextual snackbar alert utility macro to display localized runtime validation alerts.
+      </p>
+    </section>
+
+    <section class="section-block" id="complete-implementation">
+      <h2 class="section-title"><span class="sec-num">Section 6</span>Full Technical Code Guide</h2>
+      <p>
+        The complete implementation layout code below demonstrates how to declare a structural side drawer panel, clear out padding coordinates, configure profile text styles, skin the container background color, download PNG logo assets, and tie interaction taps cleanly to responsive system snackbars:
+      </p>
+
+      <div class="code-container">
+        <span class="code-keyword">import</span> <span class="code-string">'package:flutter/material.dart'</span>;<br><br>
+        <span class="code-type">void</span> <span class="code-keyword">main</span>() {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">runApp</span>(<span class="code-keyword">const</span> <span class="code-type">MyApplication</span>());<br>
+        }<br><br>
+        <span class="code-keyword">class</span> <span class="code-type">MyApplication</span> <span class="code-keyword">extends</span> <span class="code-type">StatelessWidget</span> {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> <span class="code-type">MyApplication</span>({<span class="code-keyword">super</span>.key});<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">@override</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-type">Widget</span> <span class="code-keyword">build</span>(<span class="code-type">BuildContext</span> context) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-keyword">const</span> <span class="code-type">MaterialApp</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title: <span class="code-string">'Drawer Header Development Lab'</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;debugShowCheckedModeBanner: <span class="code-keyword">false</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;home: <span class="code-type">HomeActivity</span>(),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        }<br><br>
+        <span class="code-keyword">class</span> <span class="code-type">HomeActivity</span> <span class="code-keyword">extends</span> <span class="code-type">StatelessWidget</span> {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> <span class="code-type">HomeActivity</span>({<span class="code-keyword">super</span>.key});<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-type">void</span> <span class="code-keyword">myMessage</span>(<span class="code-type">String</span> text, <span class="code-type">BuildContext</span> context) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-type">ScaffoldMessenger</span>.<span class="code-keyword">of</span>(context).<span class="code-keyword">showSnackBar</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-type">SnackBar</span>(content: <span class="code-type">Text</span>(text)),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">@override</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-type">Widget</span> <span class="code-keyword">build</span>(<span class="code-type">BuildContext</span> context) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-type">Scaffold</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;appBar: <span class="code-type">AppBar</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title: <span class="code-keyword">const</span> <span class="code-type">Text</span>(<span class="code-string">'Identity Navigation Studio'</span>),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;backgroundColor: <span class="code-type">Colors</span>.teal,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;body: <span class="code-keyword">const</span> <span class="code-type">Center</span>(child: <span class="code-type">Text</span>(<span class="code-string">'Swipe from left or click menu'</span>)),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drawer: <span class="code-type">Drawer</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;child: <span class="code-type">ListView</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;children: [<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-type">DrawerHeader</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;padding: <span class="code-keyword">const</span> <span class="code-type">EdgeInsets</span>.all(<span class="code-number">0</span>), <span class="code-comment">// Flushes header boundary margins cleanly</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;child: <span class="code-type">UserAccountsDrawerHeader</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;decoration: <span class="code-keyword">const</span> <span class="code-type">BoxDecoration</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color: <span class="code-type">Colors</span>.black12, <span class="code-comment">// Muted charcoal background skin tint</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;accountName: <span class="code-keyword">const</span> <span class="code-type">Text</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">'Jimmy Hank'</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;style: <span class="code-type">TextStyle</span>(color: <span class="code-type">Colors</span>.black), <span class="code-comment">// High-contrast profile text</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;accountEmail: <span class="code-keyword">const</span> <span class="code-type">Text</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">'info.jimmyhanke@gmail.com'</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;style: <span class="code-type">TextStyle</span>(color: <span class="code-type">Colors</span>.black),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentAccountPictureSize: <span class="code-keyword">const</span> <span class="code-type">Size</span>.square(<span class="code-number">50.0</span>), <span class="code-comment">// Restricting photo diameter bounds</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentAccountPicture: <span class="code-type">Image</span>.network(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">'https://storage.googleapis.com/cms-storage-bucket/780e0e90332e41b22b37.png'</span> <span class="code-comment">// Verified remote asset PNG link</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onDetailsPressed: () {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Executing contextual notification alerts on panel interaction clicks</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;myMessage(<span class="code-string">'Here are my profile details!'</span>, context);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-type">ListTile</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;leading: <span class="code-keyword">const</span> <span class="code-type">Icon</span>(<span class="code-type">Icons</span>.home),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title: <span class="code-keyword">const</span> <span class="code-type">Text</span>(<span class="code-string">'Home Panel Dashboard'</span>),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;],<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        }
+      </div>
+    </section>
+
+  </div>
+
+  <div id=\"footer\">
+    <span>Learn Flutter Programming – Beginner to Master</span>
+  </div>
+
+</div>
+
+</body>
+</html>
