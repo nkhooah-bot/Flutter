@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Flutter Architecture — Workspace Folder Structure Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,wght@0,300;0,700;0,900;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #f5f0e8;
+      --surface: #fff9f0;
+      --surface2: #ede8df;
+      --border: #d9d2c5;
+      --ink: #1a1610;
+      --muted: #7a7065;
+      --accent: #02569B; /* Flutter Blue */
+      --accent-light: #0175C2;
+      --accent-warn: #d68910;
+      --accent-danger: #c0392b;
+      --green: #27ae60;
+      --code-bg: #1a1610;
+      --code-text: #e8e0d0;
+      --done-bg: #eafaf1;
+      --done-border: #27ae60;
+      --radius: 10px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 40px 20px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .logo-area {
+      font-family: 'Fraunces', serif;
+      font-weight: 900;
+      font-size: 24px;
+      letter-spacing: -1px;
+      color: var(--ink);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 36px;
+      line-height: 1.1;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+      color: var(--ink);
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 500px;
+      margin: 0 auto 24px;
+    }
+
+    /* Progress Bar Tracker */
+    .progress-sticky {
+      position: sticky;
+      top: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 16px 20px;
+      border-radius: var(--radius);
+      box-shadow: 0 8px 30px rgba(26,22,16,0.06);
+      z-index: 100;
+      margin-bottom: 30px;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .progress-bar-bg {
+      background: var(--surface2);
+      height: 8px;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      background: var(--green);
+      height: 100%;
+      width: 0%;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Accordion Step Cards */
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 14px;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .step:hover {
+      box-shadow: 0 4px 20px rgba(26,22,16,0.04);
+    }
+
+    .step-trigger {
+      width: 100%;
+      padding: 24px;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      color: var(--ink);
+    }
+
+    .step-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      font-size: 14px;
+      background: var(--surface2);
+      color: var(--muted);
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-top: 2px;
+    }
+
+    .step-title-area {
+      flex: 1;
+    }
+
+    .step-title-area h2 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+    .step-desc {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .chevron {
+      font-size: 18px;
+      color: var(--muted);
+      transition: transform 0.2s ease;
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+    }
+
+    /* Expansion Framework */
+    .step-content {
+      display: none;
+      padding: 0 24px 24px 56px;
+      border-top: 1px dashed var(--border);
+      background: rgba(255,251,245,0.5);
+    }
+
+    .step.open .step-content {
+      display: block;
+    }
+
+    .step.open .chevron {
+      transform: rotate(90deg);
+    }
+
+    /* Content Typography elements */
+    .step-content p {
+      font-size: 15px;
+      color: var(--ink);
+      margin-top: 16px;
+      margin-bottom: 12px;
+    }
+
+    .step-content ol, .step-content ul {
+      padding-left: 20px;
+      margin-bottom: 16px;
+    }
+
+    .step-content li {
+      font-size: 14.5px;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    /* Target Directory Tree Output Boxes */
+    .terminal-box {
+      background: var(--code-bg);
+      color: var(--code-text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13.5px;
+      padding: 16px;
+      border-radius: 6px;
+      margin: 14px 0;
+      overflow-x: auto;
+      border: 1px solid #2d251a;
+      line-height: 1.6;
+    }
+    .terminal-box span.dir { color: #85c1e9; font-weight: bold; }
+    .terminal-box span.file { color: #73c6b6; }
+    .terminal-box span.focus { color: #f8c471; font-weight: bold; }
+
+    /* Operational Focus Tags */
+    .chip {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--surface2);
+      color: var(--ink);
+    }
+    .chip.modify {
+      background: #eaf2f8;
+      color: var(--accent-light);
+      border: 1px solid rgba(1, 117, 194, 0.2);
+    }
+    .chip.ignore {
+      background: #f4f6f7;
+      color: var(--muted);
+    }
+
+    /* Alerts and Warning Sub-banners */
+    .alert-sub {
+      border-left: 3px solid var(--accent-light);
+      background: #f4f9fd;
+      padding: 12px 16px;
+      margin: 16px 0;
+      border-radius: 0 6px 6px 0;
+      font-size: 14px;
+    }
+    .alert-sub.warning {
+      border-left-color: var(--accent-warn);
+      background: #fffdf0;
+    }
+    .alert-sub-title {
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+
+    /* Completion States */
+    .mark-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .mark-btn:hover {
+      background: var(--border);
+    }
+
+    .step.done {
+      border-color: var(--done-border);
+      background: var(--done-bg);
+    }
+
+    .step.done .step-num {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .step.done .step-content {
+      background: transparent;
+      border-top-color: var(--done-border);
+    }
+
+    .step.done .mark-btn {
+      background: var(--green);
+      color: #fff;
+      border-color: var(--green);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 60px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+    }
+
+    @media(max-width: 600px) {
+      body { padding: 20px 12px; }
+      .step-trigger { padding: 16px; gap: 10px; }
+      .step-content { padding: 0 16px 16px 16px; }
+      h1 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <header>
+    <div class="logo-area">Chapter 4</div>
+    <h1>Understanding Flutter Folder Structure</h1>
+    <div class="subtitle">Interactive Lecture Notes — Learn how cross-platform initialization code mappings translate to target devices.</div>
+  </header>
+
+  <div class="progress-sticky">
+    <div class="progress-info">
+      <span>LECTURE PROGRESS TRACKER</span>
+      <span id="progressTxt">0 of 7 SECTIONS REVIEWED (0%)</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+  </div>
+
+  <div class="steps-wrapper">
+
+    <div class="step" id="s1">
+      <button class="step-trigger" onclick="toggle(1)">
+        <span class="step-num">01</span>
+        <div class="step-title-area">
+          <h2>Introduction to Flutter Projects</h2>
+          <div class="step-desc">Overview of automatic scaffolding layout architectures</div>
+        </div>
+        <span class="chevron">&gt;</span>
+      </button>
+      <div class="step-content">
+        <p>When you initialize a brand new application workspace within the Flutter framework, the tool automatically scaffolds a deep array of files and subdirectories. This project layout handles configuration variables, cross-platform compilation targets, dependencies, testing scopes, and actual application source files.</p>
+        <p><strong>Core Objectives of This Lecture:</strong></p>
+        <ul>
+          <li>Map out the visible directories on your IDE's structural view sidebar panel.</li>
+          <li>Isolate the directories where developers spend <strong>99%</strong> of their manual programming effort.</li>
+          <li>Identify files managed directly by background automation processes that should remain completely unedited.</li>
+        </ul>
+        <div class="alert-sub">
+          <div class="alert-sub-title">Strategy Tip</div>
+          Understanding exactly which directories to ignore prevents unneeded architectural complexity and keeps deployment channels free from broken custom code settings.
+        </div>
+        <button class="mark-btn" onclick="markDone(1,event)">✓ Mark as done</button>
+      </div>
+    </div>
+
+    <div class="step" id="s2">
+      <button class="step-trigger" onclick="toggle(2)">
+        <span class="step-num">02</span>
+        <div class="step-title-area">
+          <h2>The .idea Folder</h2>
+          <div class="step-desc">Integrated Development Environment workspace mapping controls</div>
+        </div>
+        <span class="chevron">&gt;</span>
+      </button>
+      <div class="step-content">
+        <p>Positioned right at the peak top boundary of your initialization structure tree (often immediately below the automated <code class="chip">.dart_tool</code> layer), you will find the <code class="chip">.idea</code> configuration directory structure block.</p>
+        <div class="terminal-box">
+          📂 Your_Flutter_Project/<br>
+          ├── 📂 .dart_tool/<br>
+          ├── 📂 <span class="focus">.idea/</span> <span class="chip ignore">DO NOT TOUCH</span> &lt;-- Top level structural position<br>
+          └── 📂 android/
+        </div>
+        <p><strong>Key Administrative Specifications:</strong></p>
+        <ul>
+          <li>This folder contains the underlying setup rules and internal layout properties for <strong>Android Studio</strong> (the Integrated Development Environment used to write code and manage local mobile emulators).</li>
+          <li><strong>Modification Policy:</strong> <span style="font-weight: 600; color: var(--accent-danger);">Strictly Keep Intact</span>. Developers should never manually dive into this section to edit metadata properties.</li>
+        </ul>
+        <div class="alert-sub warning">
+          <div class="alert-sub-title">Warning</div>
+          Making custom changes inside the raw XML parameter configurations of the <code class="chip">.idea</code> folder can lead to environment mismatches, forcing you to completely clear and reset local IDE workspace options.
+        </div>
+        <button class="mark-btn" onclick="markDone(2,event)">✓ Mark as done</button>
+      </div>
+    </div>
+
+    <div class="step" id="s3">
+      <button class="step-trigger" onclick="toggle(3)">
+        <span class="step-num">03</span>
+        <div class="step-title-area">
+          <h2>The /android &amp; /ios Directories</h2>
+          <div class="step-desc">Native integration channels and platform compilation frameworks</div>
+        </div>
+        <span class="chevron">&gt;</span>
+      </button>
+      <div class="step-content">
+        <p>Because Flutter functions as an advanced cross-platform development tool, it targets multiple distinct host operating systems using native wrapper code blocks.</p>
+        
+        <p><strong>1. The <code class="chip">android</code> Directory Structure:</strong></p>
+        <ul>
+          <li>Holds a complete, functional native Android software project framework setup.</li>
+          <li>When compilation processes occur, your custom dart codebase gets compiled down into native machines strings, then dynamically injected directly inside this target project.</li>
+          <li>The final build output generated from this directory is a true native Android package deployment file.</li>
+        </ul>
+
+        <p><strong>2. The <code class="chip">ios</code> Directory Structure:</strong></p>
+        <ul>
+          <li>Holds a complete native project setup configured explicitly for Apple's macOS ecosystem development models.</li>
+          <li>Just like its Android counterpart, the shared Dart logic layers get compiled and linked as an native iOS application module.</li>
+        </ul>
+
+        <div class="alert-sub warning">
+          <div class="alert-sub-title">Critical Platform System Requirement</div>
+          Compiling, running, and testing the target sub-components within the <code class="chip">ios</code> directory requires a machine running <strong>macOS</strong> (such as an Apple Laptop or desktop PC). You cannot fully compile native iOS builds inside a standard Microsoft Windows environment.
+        </div>
+        <button class="mark-btn" onclick="markDone(3,event)">✓ Mark as done</button>
+      </div>
+    </div>
+
+    <div class="step" id="s4">
+      <button class="step-trigger" onclick="toggle(4)">
+        <span class="step-num">04</span>
+        <div class="step-title-area">
+          <h2>The /lib Directory (The Library Root)</h2>
+          <div class="step-desc">The core location for your Dart codebase files</div>
+        </div>
+        <span class="chevron">&gt;</span>
+      </button>
+      <div class="step-content">
+        <p>The <code class="chip">lib</code> folder (short for <strong>Library</strong>) represents the core directory of your entire interactive software project workspace.</p>
+        <div class="alert-sub">
+          <div class="alert-sub-title">Development Rule</div>
+          Developers spend roughly <strong>99% of their workspace programming lifecycle</strong> directly inside this directory. This is where you create all custom layout structures and application features.
+        </div>
+        <p><strong>Core Functional Purpose:</strong></p>
+        <ul>
+          <li>This directory stores the actual <code class="chip">.dart</code> source files that run your application logic.</li>
+          <li>By default, initialization templates generate a primary entry point file named <code class="chip">main.dart</code> directly within this directory context layer.</li>
+          <li>All sub-component interface structures, logic trees, data handlers, and operational screens should be organized neatly into sub-folders right inside this root path.</li>
+        </ul>
+        <button class="mark-btn" onclick="markDone(4,event)">✓ Mark as done</button>
+      </div>
+    </div>
+
+    <div class="step" id="s5">
+      <button class="step-trigger" onclick="toggle(5)">
+        <span class="step-num">05</span>
+        <div class="step-title-area">
+          <h2>The /test &amp; .gitignore Files</h2>
+          <div class="step-desc">Automated testing engines and source control exclusion parameters</div>
+        </div>
+        <span class="chevron">&gt;</span>
+      </button>
+      <div class="step-content">
+        <p><strong>1. The <code class="chip">test</code> Folder System:</strong></p>
+        <ul>
+          <li>Sits positioned directly adjacent to your main library structural folders.</li>
+          <li>Contains dedicated Dart verification code designed to evaluate your main application performance.</li>
+          <li>Runs automated test suites during compilation stages to verify that changes have not caused regressions or system faults.</li>
+          <li>For early learning stages, manual editing inside this block is completely optional since it hooks directly into default automated system validation.</li>
+        </ul>
+
+        <p><strong>2. The <code class="chip">.gitignore</code> File Parameter:</strong></p>
+        <ul>
+          <li>A standard plaintext configuration file utilized to instruct global distributed versioning platforms (like <strong>GitHub</strong>).</li>
+          <li>Tells Git exactly which local files, scratchpaths, or hidden build artifact subdirectories should be kept offline.</li>
+          <li>This prevents bulky system binaries and ephemeral machine files from bloating shared remote code repositories.</li>
+        </ul>
+        <button class="mark-btn" onclick="markDone(5,event)">✓ Mark as done</button>
+      </div>
+    </div>
+
+    <div class="step" id="s6">
+      <button class="step-trigger" onclick="toggle(6)">
+        <span class="step-num">06</span>
+        <div class="step-title-area">
+          <h2>The pubspec.yaml Configuration Engine</h2>
+          <div class="step-desc">Project metadata, asset mapping pipelines, and package lock records</div>
+        </div>
+        <span class="chevron">&gt;</span>
+      </button>
+      <div class="step-content">
+        <p>The final 1% of a developer's manual editing activities centers around managing external packages, configurations, and static file inclusions.</p>
+        
+        <p><strong>The <code class="chip modify">pubspec.yaml</code> Project Manifest:</strong></p>
+        <p>This text document serves as your master project management manifest file. It controls the active execution environment parameters through structured metadata blocks:</p>
+        <ul>
+          <li><strong>Identity Mapping:</strong> Defines your specific project name, version counter, and initial descriptive strings.</li>
+          <li><strong>Dependency Tracking:</strong> Lists external third-party software plug-ins and ecosystem widgets imported to add new capabilities.</li>
+          <li><strong>Asset Binding:</strong> Maps file storage pathways for loading asset objects like static images, font files, and data documents into your visual interfaces.</li>
+        </ul>
+
+        <p><strong>The <code class="chip ignore">pubspec.lock</code> Version Snapshot:</strong></p>
+        <ul>
+          <li>An auto-generated mapping file created directly alongside your main YAML document.</li>
+          <li>Provides a strict, detailed snapshot record of the exact versions installed for all dependencies.</li>
+          <li>Maintained entirely by the framework, developers should never modify this lockfile manually.</li>
+        </ul>
+        <button class="mark-btn" onclick="markDone(6,event)">✓ Mark as done</button>
+      </div>
+    </div>
+
+    <div class="step" id="s7">
+      <button class="step-trigger" onclick="toggle(7)">
+        <span class="step-num">07</span>
+        <div class="step-title-area">
+          <h2>Summary Matrix Checklist</h2>
+          <div class="step-desc">Review manual editing guidelines and directory roles</div>
+        </div>
+        <span class="chevron">&gt;</span>
+      </button>
+      <div class="step-content">
+        <p>Review this quick-reference overview of the absolute focus rules for a standard Flutter project workspace layout:</p>
+        
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px;">
+          <thead>
+            <tr style="background: var(--surface2);">
+              <th style="padding: 10px; border-bottom: 1px solid var(--border);">Directory Object</th>
+              <th style="padding: 10px; border-bottom: 1px solid var(--border);">Management Class</th>
+              <th style="padding: 10px; border-bottom: 1px solid var(--border);">Developer Action Rule</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding: 10px; border-bottom: 1px solid var(--border); font-family: monospace;"><span class="focus">/lib</span></td>
+              <td style="padding: 10px; border-bottom: 1px solid var(--border);">Primary Source (99%)</td>
+              <td style="padding: 10px; border-bottom: 1px solid var(--border); color: var(--green); font-weight: bold;">Manual Programming Workspace</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; border-bottom: 1px solid var(--border); font-family: monospace;"><span class="focus">pubspec.yaml</span></td>
+              <td style="padding: 10px; border-bottom: 1px solid var(--border);">Project Manifest (1%)</td>
+              <td style="padding: 10px; border-bottom: 1px solid var(--border); color: var(--accent-light); font-weight: bold;">Add Dependencies / Assets</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; border-bottom: 1px solid var(--border); font-family: monospace;">.idea / .metadata</td>
+              <td style="padding: 10px; border-bottom: 1px solid var(--border);">IDE / Tool Automation</td>
+              <td style="padding: 10px; border-bottom: 1px solid var(--border); color: var(--muted);">Leave Untouched / Ignore</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; border-bottom: 1px solid var(--border); font-family: monospace;">/android /ios</td>
+              <td style="padding: 10px; border-bottom: 1px solid var(--border);">Native Platforms</td>
+              <td style="padding: 10px; border-bottom: 1px solid var(--border); color: var(--muted);">Auto-compiled via Flutter Core</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <p>Keep these structural definitions in mind as we transition to building active application views in the next section!</p>
+        <button class="mark-btn" onclick="markDone(7,event)">✓ Complete Lecture</button>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    Future Coders Club — Learn Python &amp; Flutter Engineering — Lecture Notes v4.0
+  </footer>
+
+</div>
+
+<script>
+  const TOTAL_STEPS = 7;
+  const completedSteps = new Set();
+
+  function toggle(stepNum) {
+    const targetStep = document.getElementById('s' + stepNum);
+    const isOpen = targetStep.classList.contains('open');
+    
+    // Close all open sections to maintain layout stability
+    document.querySelectorAll('.step.open').forEach(s => s.classList.remove('open'));
+    
+    // Open target section if it was closed
+    if (!isOpen) {
+      targetStep.classList.add('open');
+    }
+  }
+
+  function markDone(stepNum, event) {
+    event.stopPropagation(); // Avoid triggering toggle changes on click
+    const stepEl = document.getElementById('s' + stepNum);
+    
+    if (completedSteps.has(stepNum)) {
+      completedSteps.delete(stepNum);
+      stepEl.classList.remove('done');
+      stepEl.querySelector('.mark-btn').textContent = '✓ Mark as done';
+    } else {
+      completedSteps.add(stepNum);
+      stepEl.classList.add('done');
+      stepEl.querySelector('.mark-btn').textContent = '✓ Reviewed';
+      
+      // Auto close current step and open next sequential step
+      stepEl.classList.remove('open');
+      if(stepNum < TOTAL_STEPS) {
+        const nextStep = document.getElementById('s' + (stepNum + 1));
+        if(!nextStep.classList.contains('done')) {
+          nextStep.classList.add('open');
+        }
+      }
+    }
+    updateProgressTracker();
+  }
+
+  function updateProgressTracker() {
+    const count = completedSteps.size;
+    const percentage = Math.round((count / TOTAL_STEPS) * 100);
+    
+    // Update tracking element states
+    document.getElementById('progressTxt').textContent = `${count} of ${TOTAL_STEPS} SECTIONS REVIEWED (${percentage}%)`;
+    document.getElementById('progressBar').style.width = percentage + '%';
+  }
+</script>
+
+</body>
+</html>
