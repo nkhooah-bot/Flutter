@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lecture 7: Main Source Architecture &amp; Diagnostic Alignment</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Code+Pro:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #1a6b72;
+    --teal-dark: #124f54;
+    --teal-light: #e8f4f5;
+    --gold: #c8a84b;
+    --cream: #fdf6ec;
+    --paper: #fffdf9;
+    --ink: #1e1e1e;
+    --muted: #6b6b6b;
+    --border: #d4c9b0;
+    --code-bg: #f5f2ec;
+    --accent: #e85d2a;
+    --green: #3d9970;
+    --red: #c0392b;
+    --page-width: 820px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #c8bfaf;
+    background-image: repeating-linear-gradient(45deg, #c4baa9 0px, #c4baa9 2px, transparent 2px, transparent 10px);
+    font-family: 'Lato', sans-serif;
+    color: var(--ink);
+    line-height: 1.6;
+    padding: 40px 20px;
+  }
+  #page-container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    background: var(--paper);
+    padding: 50px 60px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    position: relative;
+  }
+  header {
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+  }
+  .meta-header {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 13px;
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    color: var(--teal-dark);
+    line-height: 1.2;
+    font-weight: 700;
+  }
+  .intro-text {
+    font-size: 16px;
+    color: var(--muted);
+    margin-top: 15px;
+    font-style: italic;
+  }
+  #toc {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    padding: 25px;
+    margin-bottom: 40px;
+  }
+  #toc h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--teal-dark);
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 5px;
+  }
+  #toc ul {
+    list-style: none;
+  }
+  #toc li {
+    margin-bottom: 10px;
+    font-size: 15px;
+  }
+  #toc a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--gold);
+    transition: color 0.2s;
+  }
+  #toc a:hover {
+    color: var(--teal);
+    border-bottom-style: solid;
+  }
+  .section-block {
+    margin-bottom: 45px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: var(--teal-dark);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+  }
+  .sec-num {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 14px;
+    background: var(--teal);
+    color: white;
+    padding: 3px 8px;
+    margin-right: 12px;
+    border-radius: 3px;
+    font-weight: 400;
+  }
+  p {
+    margin-bottom: 18px;
+    font-size: 16px;
+    color: #2c2c2c;
+    text-align: justify;
+  }
+  p strong {
+    color: var(--teal-dark);
+  }
+  .pro-tip {
+    background: var(--teal-light);
+    border-left: 4px solid var(--teal);
+    padding: 20px;
+    margin: 25px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .pro-tip h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--teal-dark);
+    margin-bottom: 8px;
+  }
+  .diagnostic-box {
+    background: #fdf2f2;
+    border-left: 4px solid var(--red);
+    padding: 20px;
+    margin: 25px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .diagnostic-box h3 {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 15px;
+    color: var(--red);
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .code-container {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 20px;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 25px 0;
+    overflow-x: auto;
+    border-radius: 4px;
+  }
+  .code-comment { color: #8c8c8c; font-style: italic; }
+  .code-keyword { color: #a11515; font-weight: 600; }
+  .code-type { color: #1a6b72; font-weight: 600; }
+  .code-string { color: #2b7a3e; }
+  
+  .chip {
+    font-family: 'Source Code Pro', monospace;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    font-size: 13.5px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--teal-dark);
+  }
+  
+  #footer {
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<div id="page-container">
+
+  <header>
+    <div class="meta-header">Flutter Cross-Platform Architecture Series</div>
+    <h1>Chapter 7: Writing Your First Main Source Code &amp; Test Suite</h1>
+    <div class="intro-text">
+      Moving from structural layout theory to practical lab operations inside Android Studio by building a baseline production script and resolving environment decoupling test errors.
+    </div>
+  </header>
+
+  <nav id="toc">
+    <h2>Table of Contents</h2>
+    <ul>
+      <li><a href="#section1">1. Transitioning to Practical Lab Work &amp; Execution Strategy</a></li>
+      <li><a href="#section2">2. Bootstrapping the Application Base &amp; Canvas Allocation</a></li>
+      <li><a href="#section3">3. Constructing the Activity &amp; Scaffold Skeleton</a></li>
+      <li><a href="#section4">4. Production Blueprint: Complete lib/main.dart Script</a></li>
+      <li><a href="#section5">5. Workspace Troubleshooting: Analysis of creation_with_non_type</a></li>
+      <li><a href="#section6">6. Test Alignment Blueprint: Complete test/widget_test.dart Script</a></li>
+    </ul>
+  </nav>
+
+  <div id="content-wrapper">
+
+    <section class="section-block" id="section1">
+      <h2 class="section-title"><span class="sec-num">Section 1</span>Transitioning to Practical Lab Work &amp; Execution Strategy</h2>
+      <p>
+        In our previous module, we mapped out the conceptual lifecycle flow of a Flutter app tree structure. Now, we are shifting away from pure taxonomy diagrams into a live developer workplace context using Android Studio. To clearly demonstrate how initialization pipelines coordinate together, we will open up an empty <span class="chip">lib/main.dart</span> entry file, remove any existing template boilerplate code entirely, and construct our operational code block sequentially from scratch.
+      </p>
+      
+      <div class="pro-tip">
+        <h3>IDE Performance Pro-Tip</h3>
+        <p>
+          Depending on your localized workspace machinery parameters, launching comprehensive emulator suites concurrently can introduce substantial memory pressure. To maintain optimized response cycles during initial staging tests, executing layout rendering on a standard lightweight target browser pipeline like <strong>Chrome Web</strong> is an effective debugging strategy.
+        </p>
+      </div>
+    </section>
+
+    <section class="section-block" id="section2">
+      <h2 class="section-title"><span class="sec-num">Section 2</span>Bootstrapping the Application Base &amp; Canvas Allocation</h2>
+      <p>
+        Our implementation script begins with an essential setup step: importing the material framework library package. This injects all downstream widgets, design properties, and operational parameters into our workspace. Next, we initialize the foundational platform entryway function: <span class="chip">void main()</span>. Inside its block body, we invoke the framework container bootstrap function <span class="chip">runApp()</span>. This function instantiates our custom root layout class container, which we will define under the identifier name <strong><code>MyApplication</code></strong>.
+      </p>
+      <p>
+        To write the <span class="chip">MyApplication</span> target layout block, declare a new class object using structural inheritance links to connect it directly to a clean <span class="chip">StatelessWidget</span> baseline component model. Inside Android Studio, using the keyboard shortcut combination <strong>Alt + Enter</strong> on an unconfigured class statement activates automated development helpers. This instantly generates your missing layout <span class="chip">@override build()</span> framework code blocks and sets up necessary key constructors for compile-time optimization stability.
+      </p>
+      <p>
+        With our root application layer constructed, we override its inner build workflow routine to return an operational <span class="chip">MaterialApp</span>. This structural anchor coordinates routing maps, navigation lines, and theme attributes across your view canvas. Inside this Material core framework, initialize the entry page canvas parameters using the <span class="chip">home</span> parameter key, pointing it directly to our upcoming standalone custom page canvas class named <strong><code>HomeActivity</code></strong>.
+      </p>
+    </section>
+
+    <section class="section-block" id="section3">
+      <h2 class="section-title"><span class="sec-num">Section 3</span>Constructing the Activity &amp; Scaffold Skeleton</h2>
+      <p>
+        Next, we create the designated landing page view by declaring our <span class="chip">HomeActivity</span> class structure, which also inherits structural behaviors from a <span class="chip">StatelessWidget</span> baseline component. As we learned previously, an Activity page acts as a macro background canvas screen. To safely organize visual interface components onto that canvas without leaving an empty page layout, you must return a foundational structural layout widget called a <strong>Scaffold</strong>.
+      </p>
+      
+      <p><strong>The Scaffold Structural Grid:</strong> The Scaffold acts as a pre-configured layout grid that holds all sub-component interfaces together in structured layouts, including headers, bodies, drawers, and bottom bars.</p>
+      
+      
+      
+      <p><strong>The Nested Component Positions:</strong> Once declared, the grid maps specific widget slots: <span class="chip">appBar</span> controls header slots, while <span class="chip">body</span> acts as the central canvas zone for user contents like text grids or buttons. To complete our practical experiment, we populate the Scaffold slots with basic functional components. We define an interactive header using the <span class="chip">AppBar</span> constructor containing a custom text title string, and initialize a layout workspace area inside the <span class="chip">body</span> argument that prints our greeting row message.</p>
+    </section>
+
+    <section class="section-block" id="section4">
+      <h2 class="section-title"><span class="sec-num">Section 4</span>Production Blueprint: Complete lib/main.dart Script</h2>
+      <p>
+        Below is the finalized, fully functional code block built step-by-step during our lab session. You can copy and drop this code directly into your local workspace setup environment:
+      </p>
+
+      <div class="code-container">
+        <span class="code-keyword">import</span> <span class="code-string">'package:flutter/material.dart'</span>;<br><br>
+        <span class="code-comment">// Primary bootstrap execution gateway</span><br>
+        <span class="code-type">void</span> <span class="code-keyword">main</span>() {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">runApp</span>(<span class="code-keyword">const</span> <span class="code-type">MyApplication</span>());<br>
+        }<br><br>
+        <span class="code-comment">// Root wrapper managing environment configuration states</span><br>
+        <span class="code-keyword">class</span> <span class="code-type">MyApplication</span> <span class="code-keyword">extends</span> <span class="code-type">StatelessWidget</span> {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> <span class="code-type">MyApplication</span>({<span class="code-keyword">super</span>.key});<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">@override</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-type">Widget</span> <span class="code-keyword">build</span>(<span class="code-type">BuildContext</span> context) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-keyword">const</span> <span class="code-type">MaterialApp</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title: <span class="code-string">'First Lab Application'</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;home: <span class="code-type">HomeActivity</span>(),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        }<br><br>
+        <span class="code-comment">// Standalone Activity Page canvas implementation</span><br>
+        <span class="code-keyword">class</span> <span class="code-type">HomeActivity</span> <span class="code-keyword">extends</span> <span class="code-type">StatelessWidget</span> {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> <span class="code-type">HomeActivity</span>({<span class="code-keyword">super</span>.key});<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">@override</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-type">Widget</span> <span class="code-keyword">build</span>(<span class="code-type">BuildContext</span> context) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-type">Scaffold</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Top navigational app header frame position</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;appBar: <span class="code-type">AppBar</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title: <span class="code-keyword">const</span> <span class="code-type">Text</span>(<span class="code-string">'This is My Application'</span>),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Primary interior layout body frame position</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;body: <span class="code-keyword">const</span> <span class="code-type">Text</span>(<span class="code-string">'Hello everyone!'</span>),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        }
+      </div>
+    </section>
+
+    <section class="section-block" id="section5">
+      <h2 class="section-title"><span class="sec-num">Section 5</span>Workspace Troubleshooting: Analysis of creation_with_non_type</h2>
+      <p>
+        While your production architecture inside <span class="chip">lib/main.dart</span> is structured perfectly, the IDE background static analysis engine will often flash an immediate operational warning roadblock in your diagnostic console panel:
+      </p>
+
+      <div class="diagnostic-box">
+        <h3>Diagnostic Trace Link: <code>creation_with_non_type</code></h3>
+        <p><strong>Target File Workspace Reference:</strong> <code>test/widget_test.dart</code> (Line 16)</p>
+        <p><strong>Error Message Description:</strong> <code>The name 'MyApp' isn't a class. Try correcting the name to match an existing class.</code></p>
+      </div>
+
+      <p>
+        This decouple issue is a normal side effect of template code modernization. When background framework initializers generate a fresh cross-platform workspace, they automatically drop a sample automated unit test routine named <span class="chip">widget_test.dart</span> inside the isolated <span class="chip">test/</span> workspace folder. This default file contains a pre-configured check that is hardcoded to look for the placeholder name <strong><code>MyApp</code></strong>.
+      </p>
+      <p>
+        Because we cleanly modified our production script wrapper identifier name to <strong><code>MyApplication</code></strong>, the background unit test script breaks. It becomes un-synchronized, hunting for an old code class configuration that no longer exists in your project scope. To clear out this diagnostic roadblock and safely execute builds, you simply need to bring your decoupled testing file into structural parity with your code modifications by navigating to line 16 and swapping out <span class="chip">pumpWidget(const MyApp())</span> for your active framework target: <span class="chip">MyApplication()</span>.
+      </p>
+    </section>
+
+    <section class="section-block" id="section6">
+      <h2 class="section-title"><span class="sec-num">Section 6</span>Test Alignment Blueprint: Complete test/widget_test.dart Script</h2>
+      <p>
+        Below is the fully corrected, synchronized test blueprint script. Copy and drop this framework directly into your project's <strong><code>test/widget_test.dart</code></strong> file to clear out all compilation warnings cleanly:
+      </p>
+
+      <div class="code-container">
+        <span class="code-comment">// Core testing library imports and application module cross-references</span><br>
+        <span class="code-keyword">import</span> <span class="code-string">'package:flutter_test/flutter_test.dart'</span>;<br>
+        <span class="code-comment">// Import your main script layer to ensure uniform scope mapping</span><br>
+        <span class="code-keyword">import</span> <span class="code-string">'package:flutter_application_2/main.dart'</span>;<br><br>
+        <span class="code-type">void</span> <span class="code-keyword">main</span>() {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">testWidgets</span>(<span class="code-string">'Interface render tracking smoke test verification'</span>, (<span class="code-type">WidgetTester</span> tester) <span class="code-keyword">async</span> {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Build our app structure and trigger a localized layout runtime frame drop</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">await</span> tester.<span class="code-type">pumpWidget</span>(<span class="code-keyword">const</span> <span class="code-type">MyApplication</span>()); <span class="code-comment">// Updated sync point</span><br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Verify that our greeting text is rendered on screen canvas viewports</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">expect</span>(<span class="code-type">find</span>.<span class="code-type">text</span>(<span class="code-string">'Hello everyone!'</span>), <span class="code-type">findsOneWidget</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">expect</span>(<span class="code-type">find</span>.<span class="code-type">text</span>(<span class="code-string">'Non-existent Content'</span>), <span class="code-type">findsNothing</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;});<br>
+        }
+      </div>
+
+      <p>
+        Once saved, the static analysis engine will instantly verify that your workspace links align seamlessly across both files. This updates your environment cleanly, leaving your pipeline primed and clear for upcoming layout components!
+      </p>
+      <p>
+        In our upcoming module, we will explore advanced properties inside the Scaffold engine, implementing dynamic layout parameters, custom button layers, and multi-tier interface components. Great job, and see you in the next chapter!
+      </p>
+    </section>
+
+  </div>
+
+  <div id="footer">
+    <span>Learn Flutter Programming – Beginner to Master</span>
+    <span>Section 1 · <span>Lecture Notes 7 Consolidated</span></span>
+  </div>
+
+</div>
+
+</body>
+</html>
