@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 19: Working with Material Buttons &amp; Styles</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Code+Pro:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #1a6b72;
+    --teal-dark: #124f54;
+    --teal-light: #e8f4f5;
+    --gold: #c8a84b;
+    --cream: #fdf6ec;
+    --paper: #fffdf9;
+    --ink: #1e1e1e;
+    --muted: #6b6b6b;
+    --border: #d4c9b0;
+    --code-bg: #f5f2ec;
+    --accent: #e85d2a;
+    --green: #3d9970;
+    --page-width: 820px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #c8bfaf;
+    background-image: repeating-linear-gradient(45deg, #c4baa9 0px, #c4baa9 2px, transparent 2px, transparent 10px);
+    font-family: 'Lato', sans-serif;
+    color: var(--ink);
+    line-height: 1.6;
+    padding: 40px 20px;
+  }
+  #page-container {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    background: var(--paper);
+    padding: 50px 60px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    position: relative;
+  }
+  header {
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+  }
+  .meta-header {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 13px;
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    color: var(--teal-dark);
+    line-height: 1.2;
+    font-weight: 700;
+  }
+  .intro-text {
+    font-size: 17px;
+    color: var(--muted);
+    margin-top: 15px;
+    font-style: italic;
+  }
+  #toc {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    padding: 25px;
+    margin-bottom: 40px;
+  }
+  #toc h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--teal-dark);
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 5px;
+  }
+  #toc ul {
+    list-style: none;
+  }
+  #toc li {
+    margin-bottom: 10px;
+    font-size: 15px;
+  }
+  #toc a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--gold);
+    transition: color 0.2s;
+  }
+  #toc a:hover {
+    color: var(--teal);
+    border-bottom-style: solid;
+  }
+  .section-block {
+    margin-bottom: 45px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: var(--teal-dark);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+  }
+  .sec-num {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 14px;
+    background: var(--teal);
+    color: white;
+    padding: 3px 8px;
+    margin-right: 12px;
+    border-radius: 3px;
+    font-weight: 400;
+  }
+  p {
+    margin-bottom: 18px;
+    font-size: 16px;
+    color: #2c2c2c;
+    text-align: justify;
+  }
+  ul {
+    margin-left: 25px;
+    margin-bottom: 18px;
+  }
+  li {
+    margin-bottom: 6px;
+    font-size: 16px;
+  }
+  .highlight-box {
+    background: var(--teal-light);
+    border-left: 4px solid var(--teal);
+    padding: 20px;
+    margin: 25px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .highlight-box h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--teal-dark);
+    margin-bottom: 8px;
+  }
+  .chip {
+    font-family: 'Source Code Pro', monospace;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    font-size: 13.5px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--teal-dark);
+  }
+  .code-container {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 20px;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 25px 0;
+    overflow-x: auto;
+    border-radius: 4px;
+  }
+  .code-comment { color: #8c8c8c; font-style: italic; }
+  .code-keyword { color: #a11515; font-weight: 600; }
+  .code-type { color: #1a6b72; font-weight: 600; }
+  .code-string { color: #2b7a3e; }
+  .code-number { color: #b57614; }
+  
+  #footer {
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<div id="page-container">
+
+  <header>
+    <div class="meta-header">Flutter UI Layout &amp; Architecture Series</div>
+    <h1>Chapter 19: Working with Material Buttons &amp; Styles</h1>
+    <div class="intro-text">
+      Mastering user interaction nodes: building text, elevated, and outlined buttons, executing functional triggers via onpressed hooks, and designing custom button theme styles.
+    </div>
+  </header>
+
+  <nav id="toc">
+    <h2>Table of Contents</h2>
+    <ul>
+      <li><a href="#button-types">1. Three Core Material Button Flavors</a></li>
+      <li><a href="#button-anatomy">2. Anatomy of a Button: onPressed and child</a></li>
+      <li><a href="#styling-buttons">3. Custom Styling with ButtonStyle &amp; styleFrom</a></li>
+      <li><a href="#complete-code">4. Full Workspace Lab &amp; Clean Implementation Code</a></li>
+    </ul>
+  </nav>
+
+  <div id="content-wrapper">
+
+    <section class="section-block" id="button-types">
+      <h2 class="section-title"><span class="sec-num">Section 1</span>Three Core Material Button Flavors</h2>
+      <p>
+        In Flutter's application development environment, capturing gestures and executing operations depends directly on button widgets. Material design offers three foundational button flavors, each serving distinct visual weights:
+      </p>
+      <p>
+        A <strong>TextButton</strong> is a flat, borderless text component without background fill. It is typically utilized for low-emphasis actions such as dialogue dismissals, card extensions, or clean configuration updates.
+      </p>
+      <p>
+        An <strong>ElevatedButton</strong> features a solid background fill accompanied by physical layer drop-shadow depth. The subtle surface shadows automatically morph when hovered over or clicked, making it the premier choice for high-priority primary page triggers.
+      </p>
+      <p>
+        An <strong>OutlinedButton</strong> positions an explicit, bounded decorative border outline around its interior structural layout slot. This medium-emphasis design works seamlessly for secondary paths or structural form step-backs.
+      </p>
+      
+    </section>
+
+    <section class="section-block" id="button-anatomy">
+      <h2 class="section-title"><span class="sec-num">Section 2</span>Anatomy of a Button: onPressed and child</h2>
+      <p>
+        Every standard Material button widget relies directly on two compulsory parameters to declare its layout properties and interaction hooks:
+      </p>
+      <ul>
+        <li><span class="chip">onPressed</span>: Accepts an explicit execution block or a pointer function to call immediately during user touch gestures. Passing <span class="chip">null</span> to this param implicitly disables the action node, muting button colors and disabling user clicks automatically.</li>
+        <li><span class="chip">child</span>: Holds the visual inner elements. While typically hosting a clean text widget like <span class="chip">Text('Click Here')</span>, this parameters handles any widget tree collection, letting you append row systems tracking icon images next to labels.</li>
+      </ul>
+      <div class="highlight-box">
+        <h3>User Notification Feedback Loop</h3>
+        <p>
+          Linking interactive elements to quick responsive components like a state-driven custom snackbar runtime hook (<span class="chip">ScaffoldMessenger.of(context).showSnackBar</span>) lets developers quickly confirm structural button responses without changing layout screen scopes.
+        </p>
+      </div>
+    </section>
+
+    <section class="section-block" id="styling-buttons">
+      <h2 class="section-title"><span class="sec-num">Section 3</span>Custom Styling with ButtonStyle &amp; styleFrom</h2>
+      <p>
+        Modifying color states, padding dimensions, and border parameters is managed cleanly using a specialized widget theme utility method called <span class="chip">styleFrom()</span> on the respective button class.
+      </p>
+      <p>
+        Inside the static declaration layer, assigning a color using <span class="chip">backgroundColor</span> overrides the main background canvas, whereas modifying <span class="chip">foregroundColor</span> updates inner text elements or embedded system vector graphics. 
+      </p>
+      <p>
+        To transition elements from straight rectangular layouts into smooth pills or circles, developers wrap a <span class="chip">RoundedRectangleBorder</span> schema into the <span class="chip">shape</span> property. Modifying your structural parameters using an internal definition like <span class="chip">BorderRadius.circular(value)</span> allows for pixel-perfect rounding curves across all corners simultaneously.
+      </p>
+    </section>
+
+    <section class="section-block" id="complete-code">
+      <h2 class="section-title"><span class="sec-num">Section 4</span>Full Workspace Lab &amp; Clean Implementation Code</h2>
+      <p>
+        The complete, production-ready source code implementation below shows how to configure horizontal text, elevated, and outlined button layouts inside an evenly spaced row layout framework. It contains fully structured custom color modifications, custom padding increments, and deep border rounding definitions:
+      </p>
+
+      <div class="code-container">
+        <span class="code-keyword">import</span> <span class="code-string">'package:flutter/material.dart'</span>;<br><br>
+        <span class="code-type">void</span> <span class="code-keyword">main</span>() {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">runApp</span>(<span class="code-keyword">const</span> <span class="code-type">MyApplication</span>());<br>
+        }<br><br>
+        <span class="code-keyword">const</span> <span class="code-type">Color</span> tealDark = <span class="code-type">Color</span>(<span class="code-number">0xFF124F54</span>);<br><br>
+        <span class="code-keyword">class</span> <span class="code-type">MyApplication</span> <span class="code-keyword">extends</span> <span class="code-type">StatelessWidget</span> {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> <span class="code-type">MyApplication</span>({<span class="code-keyword">super</span>.key});<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">@override</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-type">Widget</span> <span class="code-keyword">build</span>(<span class="code-type">BuildContext</span> context) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-keyword">const</span> <span class="code-type">MaterialApp</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;debugShowCheckedModeBanner: <span class="code-keyword">false</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;home: <span class="code-type">HomeActivity</span>(),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        }<br><br>
+        <span class="code-keyword">class</span> <span class="code-type">HomeActivity</span> <span class="code-keyword">extends</span> <span class="code-type">StatelessWidget</span> {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> <span class="code-type">HomeActivity</span>({<span class="code-keyword">super</span>.key});<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-type">void</span> <span class="code-keyword">myMessage</span>(<span class="code-type">String</span> message, <span class="code-type">BuildContext</span> context) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-type">ScaffoldMessenger</span>.of(context).showSnackBar(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-type">SnackBar</span>(content: <span class="code-type">Text</span>(message)),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">@override</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-type">Widget</span> <span class="code-keyword">build</span>(<span class="code-type">BuildContext</span> context) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">final</span> <span class="code-type">ButtonStyle</span> customElevatedStyle = <span class="code-type">ElevatedButton</span>.styleFrom(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;padding: <span class="code-keyword">const</span> <span class="code-type">EdgeInsets</span>.all(<span class="code-number">20.0</span>),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;backgroundColor: <span class="code-type">Colors</span>.red,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foregroundColor: <span class="code-type">Colors</span>.white,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;shape: <span class="code-keyword">const</span> <span class="code-type">RoundedRectangleBorder</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;borderRadius: <span class="code-type">BorderRadius</span>.all(<span class="code-type">Radius</span>.circular(<span class="code-number">150.0</span>)),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-type">Scaffold</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;appBar: <span class="code-type">AppBar</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title: <span class="code-keyword">const</span> <span class="code-type">Text</span>(<span class="code-string">'Material Buttons Lab'</span>),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;backgroundColor: <span class="code-type">Colors</span>.teal,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;body: <span class="code-type">Padding</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;padding: <span class="code-keyword">const</span> <span class="code-type">EdgeInsets</span>.all(<span class="code-number">16.0</span>),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;child: <span class="code-type">Row</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mainAxisAlignment: <span class="code-type">MainAxisAlignment</span>.spaceEvenly,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;children: [<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-type">TextButton</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onPressed: () => myMessage(<span class="code-string">'This is my text button in flutter!'</span>, context),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;child: <span class="code-keyword">const</span> <span class="code-type">Text</span>(<span class="code-string">'Text Button'</span>),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-type">ElevatedButton</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;style: customElevatedStyle,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onPressed: () => myMessage(<span class="code-string">'This is my elevated button!'</span>, context),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;child: <span class="code-keyword">const</span> <span class="code-type">Text</span>(<span class="code-string">'Elevated Button'</span>),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-type">OutlinedButton</span>(<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onPressed: () => myMessage(<span class="code-string">'This is my outlined button!'</span>, context),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;child: <span class="code-keyword">const</span> <span class="code-type">Text</span>(<span class="code-string">'Outlined Button'</span>),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;],<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        }
+      </div>
+    </section>
+
+    <section class="section-block">
+      <p>
+        In this lecture, we explored how to instantiate standard Material button classes and declare style modification parameters. In our upcoming chapter, we will look into adding external graphic structures, handling remote visual assets with caching rules, and structuring clean container layouts for asset delivery.
+      </p>
+    </section>
+
+  </div>
+
+  <div id="footer">
+    <span>Learn Flutter Programming – Beginner to Master</span>
+    <span>Section 1 · <span>Lecture Notes 19</span></span>
+  </div>
+
+</div>
+
+</body>
+</html>
